@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>发消息</title>
+  <meta name="generator" content="editplus" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="initial-scale=1.0, minimum-scale=1.0, maximum-scale=2.0, user-scalable=no, width=device-width">
+  <meta name="author" content="" />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+</head>
+<link rel="stylesheet" href="../css/comcss.css" type="text/css" />
+<link rel="stylesheet" href="../css/message.css" type="text/css" />
+<link rel="stylesheet" href="../css/eleui.css" type="text/css" />
+
+<body>
+<div id="main">
+<div>{{tolkTo}}</div>
+</div>
+
+</body>
+<script src="../comjs/comjs.js"></script>
+<script src="../comjs/jquery.js"></script>
+<script src="../comjs/vue@2.4.js"></script>
+<script src="../comjs/elejs.js"></script>
+<script>
+  (function ($) {
+    $.getUrlParam = function (name) {
+      var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+      var r = window.location.search.substr(1).match(reg);
+      if (r != null) return decodeURI(r[2]);  return null;
+    }
+  })(jQuery);
+  var tolkTo=$.getUrlParam("tolkTo");
+
+  var a= new Vue({
+    el: '#main',
+    data: function() {
+      return {
+        tolkTo:tolkTo,
+
+      }
+    },
+
+
+  })
+</script>
+
+
+</html>

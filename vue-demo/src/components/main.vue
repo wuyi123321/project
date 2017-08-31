@@ -89,14 +89,14 @@ export default {
       console.log(event.target.parentNode.lastChild);
       console.log($(".see"));
       event.target.parentNode.lastChild.setAttribute("style","display:block");
-      $.ajax({
-          type:"post",
-          url:"http://appinter.sunwoda.com/ekp/ekpVehicleInfoDetail.json",
-          dataType:"json",
-          data: {"token":"445555","plateNumber":"122"},
-          success:function(data){
-            console.log(data);
-          }});
+//      $.ajax({
+//          type:"post",
+//          url:"http://appinter.sunwoda.com/ekp/ekpVehicleInfoDetail.json",
+//          dataType:"json",
+//          data: {"token":"445555","plateNumber":"122"},
+//          success:function(data){
+//            console.log(data);
+//          }});
     },
     show_type:function (event) {
       this.type=event.target.innerHTML;

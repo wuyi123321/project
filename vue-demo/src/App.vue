@@ -16,7 +16,7 @@
     type:"post",
     url:"http://172.16.98.74:8080/swdAPP/common/LoveTheSkyUser/loveTheSkyUserIndex.json?",
     dataType:"json",
-    data: {"token":"f7266c2ab1be42ff34d6b8c276be41e4"},
+    data: {"token":"dcf88e4b2976b6c4eb50e65b27390552"},
     success:function(data){
       console.log(data);
       if(data.statusCode==-1){
