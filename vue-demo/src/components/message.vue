@@ -8,6 +8,7 @@
                <div class="r_bottom">亲爱的用户：欢迎来到缘分的天空,在这里求缘分，交好友</div>
                <div class="time">下午5:12</div>
              </div>
+           </li>
            <li v-for="item in 4" v-bind:id="item">
              <div class="img"><img src="../images/photo.png" width="39" height="39"/></div>
              <div class="right">
@@ -38,7 +39,6 @@ export default {
 }
 </script>
 
-
 <style>
 #message ul li{
   clear: both;
@@ -53,7 +53,7 @@ export default {
   float: left;
 }
 #message ul li .right{
-  font-size: 0.2rem;
+  font-size: 0.23rem;
   float: left;
   height: 100%;
   width: 200px;

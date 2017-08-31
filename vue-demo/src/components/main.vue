@@ -32,7 +32,7 @@
             </div>
           </div>
           <div class="body">
-       <div class="title" v-model="type"> {{type}}</div>
+       <div class="title" v-model="type">工作达人</div>
        <div class="content">
          <ul>
            <li v-for="item in 2" class="list_item">
@@ -68,7 +68,6 @@
              </div>
            </li>
          </ul>
-         586
        </div>
      </div>
    </div>

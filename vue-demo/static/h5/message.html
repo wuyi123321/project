@@ -13,17 +13,40 @@
 <link rel="stylesheet" href="../css/comcss.css" type="text/css" />
 <link rel="stylesheet" href="../css/message.css" type="text/css" />
 <link rel="stylesheet" href="../css/eleui.css" type="text/css" />
-
+<link rel="stylesheet" href="../css/font-awesome.css">
 <body>
-<div id="main">
-<div>{{tolkTo}}</div>
+<div id="messageContent">
+    <div class="title">
+       <div>{{tolkTo}}</div>
+       <div><i class="icon-user"></i></div>
+    </div>
+  <div class="lt_zong">
+    <p class="lt_df">
+      <span class="img"><img src="../images/message.png"></span>
+      <span class="lt_sjx"></span>
+      <span class="lt_zi">这里好热闹哇哇</span>
+    </p>
+    <p class="lt_df lt_df1">
+      <span class="img"><img src="../images/message.png"></span>
+      <span class="lt_sjx"></span>
+      <span class="lt_zi lt_zi3">谁看过了这个电影到底讲的是什么，好看吗？</span>
+    </p>
+
+    </div>
+    <div class="lt_bottom">
+     <form>
+    <input type="text" value="" class="lt_inp"/>
+    <!--<p class="lt_mask"></p>-->
+    <span @click="send">提交</span>
+      </form>
+   </div>
 </div>
 
 </body>
 <script src="../comjs/comjs.js"></script>
 <script src="../comjs/jquery.js"></script>
 <script src="../comjs/vue@2.4.js"></script>
-<script src="../comjs/elejs.js"></script>
+<!--<script src="../comjs/elejs.js"></script>-->
 <script>
   (function ($) {
     $.getUrlParam = function (name) {
@@ -33,15 +56,39 @@
     }
   })(jQuery);
   var tolkTo=$.getUrlParam("tolkTo");
-
   var a= new Vue({
-    el: '#main',
+    el: '#messageContent',
     data: function() {
       return {
         tolkTo:tolkTo,
 
       }
     },
+    methods:{
+      send:function () {
+        console.log("Aaa");
+        if ($('.lt_inp').val()!='') {
+          if ($('.lt_inp').val().length>=16) {
+            var str='' +
+              '<p class="lt_df lt_df1 lt_rig"><span class="img2">' +
+              '<img src="../images/photo.png" width="40" height="42"></span>' +
+              '<span class="lt_sjx lt_sjx1"></span>' +
+              '<span class="lt_zi lt_zi3 lt_zi1">'+$('.lt_inp').val()+'</span></p>';
+            // $('.lt_zong').children().eq(0).remove();
+            $('.lt_zong').append(str);
+            $('.lt_inp').val('');
+          } else{
+            var str='<p class="lt_df  lt_rig">' +
+              '<span class="img2"><img src="../images/photo.png" width="40" height="42">' +
+              '</span><span class="lt_sjx lt_sjx1">' +
+              '</span><span class="lt_zi  lt_zi1">'+$('.lt_inp').val()+'</span></p>';
+            // $('.lt_zong').children().eq(0).remove();
+            $('.lt_zong').append(str);
+            $('.lt_inp').val('');
+          }
+        }
+      }
+    }
 
 
   })
