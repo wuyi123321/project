@@ -1457,7 +1457,7 @@ function validateProp (
   // check default value
   if (value === undefined) {
     value = getPropDefaultValue(vm, prop, key);
-    // since the default value is a fresh copy,
+    // since the default value is a comm copy,
     // make sure to observe it.
     var prevShouldConvert = observerState.shouldConvert;
     observerState.shouldConvert = true;
@@ -3744,7 +3744,7 @@ function _createElement (
   if (isDef(data) && isDef((data).__ob__)) {
     "development" !== 'production' && warn(
       "Avoid using observed data object as vnode data: " + (JSON.stringify(data)) + "\n" +
-      'Always create fresh vnode data objects in each render!',
+      'Always create comm vnode data objects in each render!',
       context
     );
     return createEmptyVNode()
@@ -3995,7 +3995,7 @@ function renderStatic (
       ? cloneVNodes(tree)
       : cloneVNode(tree)
   }
-  // otherwise, render a fresh tree.
+  // otherwise, render a comm tree.
   tree = this._staticTrees[index] =
     this.$options.staticRenderFns[index].call(this._renderProxy);
   markStatic(tree, ("__static__" + index), false);
@@ -6563,7 +6563,7 @@ var parseStyleText = cached(function (cssText) {
 function normalizeStyleData (data) {
   var style = normalizeStyleBinding(data.style);
   // static style is pre-processed into an object during compilation
-  // and is always a fresh object, so it's safe to merge into it
+  // and is always a comm object, so it's safe to merge into it
   return data.staticStyle
     ? extend(data.staticStyle, style)
     : style
@@ -7628,7 +7628,7 @@ var Transition = {
       !isSameChild(child, oldChild) &&
       !isAsyncPlaceholder(oldChild)
     ) {
-      // replace old child transition data with fresh one
+      // replace old child transition data with comm one
       // important for dynamic transitions!
       var oldData = oldChild && (oldChild.data.transition = extend({}, data));
       // handle transition mode
@@ -9017,7 +9017,7 @@ var genStaticKeysCached = cached(genStaticKeys$1);
  * Once we detect these sub-trees, we can:
  *
  * 1. Hoist them into constants, so that we no longer need to
- *    create fresh nodes for them on each re-render;
+ *    create comm nodes for them on each re-render;
  * 2. Completely skip them in the patching process.
  */
 function optimize (root, options) {
@@ -9076,7 +9076,7 @@ function markStaticRoots (node, isInFor) {
     }
     // For a node to qualify as a static root, it should have children that
     // are not just static text. Otherwise the cost of hoisting out will
-    // outweigh the benefits and it's better off to just always render it fresh.
+    // outweigh the benefits and it's better off to just always render it comm.
     if (node.static && node.children.length && !(
       node.children.length === 1 &&
       node.children[0].type === 3

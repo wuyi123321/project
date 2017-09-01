@@ -19,7 +19,7 @@
                 <li v-for="item in 6" >
                   <div class="img_item">
                     <div class="img_show" @click="showsee">
-                      <img src="../images/photo.png"/>
+                      <img src="../../assets/photo.png"/>
                       <div class="see"><span>加关注</span> <span class="leave_message" >留言</span></div>
                     </div>
                     <div class="img_bottom">
@@ -38,7 +38,7 @@
            <li v-for="item in 2" class="list_item">
              <div class="img_item">
                <div class="img_show" @click="showsee">
-                 <img src="../images/photo.png"/>
+                 <img src="../../assets/photo.png"/>
                  <div class="see"><span>加关注</span> <span class="leave_message" >留言</span></div>
                </div>
                <div class="person_message">
@@ -60,7 +60,7 @@
                     <td></td>
                   </tr>
                   <tr>
-                    <td><a href="../../static/h5/index.html">注册</a>微信号</td>
+                    <td><a href="../../../static/h5/index.html">注册</a>微信号</td>
                     <td></td>
                   </tr>
                 </table>
@@ -124,6 +124,7 @@ export default {
 .block{
   width: 100%;
   height: 100%;
+ b
 }
 #nav{
     height: 25px;

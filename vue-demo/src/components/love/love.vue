@@ -3,27 +3,28 @@
      <div id="top">
        <div class="item">关注</div>
        <div class="item">推荐</div>
-       <div class="item"><i class="icon-plus"></i></div>
+       <div class="item" @click="addShow"><i class="icon-plus"></i></div>
        <div class="item">图片</div>
        <div class="item">文字</div>
      </div>
+     <add-item id="addItem"></add-item>
      <div class="content">
-       <div class="item" v-for="idex in 4">
-         <div class="it_top"><div class="it_img"><img src="../images/photo.png" width="30" height="30"/></div><div class="name">张三三</div></div>
+       <div class="item" v-for="item in 4">
+         <div class="it_top"><div class="it_img"><img src="../../assets/photo.png" width="30" height="30"/></div><div class="name">张三三</div></div>
          <div class="it_content">
            <p><span>文学天地</span>人生若只如初见，何事秋风悲画扇？等闲变却故人心，却道故人心易变。
              骊山语罢清宵半，泪雨零铃终不怨。何如薄幸锦衣郎，比翼连枝当日愿</p>
          </div>
          <div class="it_message">
            <div class="me_content">
-           <div class="it_img"><img src="../images/photo.png" width="30" height="30"/></div>
+           <div class="it_img"><img src="../../assets/photo.png" width="30" height="30"/></div>
              <div class="name">张三三<i class="icon-thumbs-up"><span>50</span></i></div>
              <div class="me_txt">等闲变却故人心，却道故人心易变</div>
            </div>
          </div>
          <div class="it_message">
            <div class="me_content">
-             <div class="it_img"><img src="../images/photo.png" width="30" height="30"/></div>
+             <div class="it_img"><img src="../../assets/photo.png" width="30" height="30"/></div>
              <div class="name">张三三</div>
              <div class="me_txt">等闲变却故人心，却道故人心易变</div>
            </div>
@@ -31,7 +32,16 @@
          <div class="it_bottom">
            <i class="icon-thumbs-up"><span>50</span></i>
            <i class="icon-thumbs-down"><span>50</span></i>
-           <i class="icon-comment"></i>
+           <i><el-popover
+             placement="bottom"
+             title="添加回复"
+             width="250"
+             trigger="click">
+             <el-input type="textarea" placeholder="期待您的神回复"></el-input>
+             <div class="submessage" @click="submessage" v-bind:id="item">确定</div>
+           <i class="icon-comment"  slot="reference"></i>
+           </el-popover>
+           </i>
          </div>
        </div>
      </div>
@@ -39,12 +49,30 @@
 </template>
 
 <script>
+  import addItem from "@/components/love/addItem.vue";
+  import ElInput from "../../../node_modules/element-ui/packages/input/src/input.vue";
 export default {
   name: 'hello',
   data () {
     return {
       msg: 'Welcome to Your Vue.js App'
     }
+  },
+  methods:{
+    addShow:function () {
+      $("#addItem").animate({height:"100vh"},"fast")
+    },
+    remove_add:function () {
+      $("#addItem").animate({height:"0"},"fast")
+    },
+    submessage:function (event) {
+      console.log(event.target.getAttribute("id"));
+      this.$message('提交成功');
+    }
+  },
+  components: {
+    ElInput,
+    addItem,
   }
 }
 </script>
@@ -65,6 +93,7 @@ export default {
     color: #555;
     background: #fff;
   }
+
   #love #top .item{
     flex: 1;
   }
@@ -178,6 +207,7 @@ export default {
     font-size: 0.3rem;
     color: #aaa;
     display: flex;
+    align-items: center;
   }
   #love .content .item .it_bottom i{
     flex: 1;
@@ -185,5 +215,10 @@ export default {
   }
   #love .content .item .it_bottom i span{
     font-size: 0.25rem;
+  }
+ .submessage{
+     margin-top: 2px;
+     text-align: right;
+     font-size: 13px;
   }
 </style>

@@ -9,7 +9,7 @@
   </div>
 </template>
 <script>
-  import Scroll from './fresh/fresh.vue';
+  import Scroll from './comm/fresh.vue';
 
   export default{
     data () {

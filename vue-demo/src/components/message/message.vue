@@ -2,7 +2,7 @@
       <div id="message">
          <ul @click="sendmessage">
            <li id="0">
-             <div class="img"><img src="../images/message.png" width="39" height="39"/></div>
+             <div class="img"><img src="../../assets/message.png" width="39" height="39"/></div>
              <div class="right">
                <div class="r_top">系统消息</div>
                <div class="r_bottom">亲爱的用户：欢迎来到缘分的天空,在这里求缘分，交好友</div>
@@ -10,7 +10,7 @@
              </div>
            </li>
            <li v-for="item in 4" v-bind:id="item">
-             <div class="img"><img src="../images/photo.png" width="39" height="39"/></div>
+             <div class="img"><img src="../../assets/photo.png" width="39" height="39"/></div>
              <div class="right">
                <div class="r_top">张三{{item}}</div>
                <div  class="r_bottom">晚上谈谈人生</div>

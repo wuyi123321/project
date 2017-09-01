@@ -3,7 +3,7 @@
      <div id="left">
        <div class="top">
          <div class="photo">
-           <div class="img"><img src="../images/photo.png"/></div>
+           <div class="img"><img src="../../assets/photo.png"/></div>
          </div>
          <div class="name">张三三</div>
        </div>
