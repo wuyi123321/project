@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <router-view class="abb"></router-view>
+    <router-view class="abb" :myMessage="myMessage" :peopleList="peopleList" :vipList="vipList" :lType="lType" :token="token" :userNo="userNo"></router-view>
     <div id="bottom">
         <div class="item"><router-link to="/index">主页</router-link></div>
         <div class="item"><router-link to="/love">情感天地</router-link></div>
@@ -9,22 +9,94 @@
     </div>
   </div>
 </template>
-
 <script>
   import $ from 'jquery'
-  $.ajax({
-    type:"post",
-    url:"http://172.16.98.74:8080/swdAPP/common/LoveTheSkyUser/loveTheSkyUserIndex.json?",
-    dataType:"json",
-    data: {"token":"dcf88e4b2976b6c4eb50e65b27390552"},
-    success:function(data){
-      console.log(data);
-      if(data.statusCode==-1){
-        window.location.href="static/h5/index.html";
-      }
-    }});
+ // var token = "00098635bd29551e6151a76edd395cec";
+  var token = "7d37573b9e465f676ecc233c4b72cbeb";
+  (function ($) {
+    $.getUrlParam = function (name) {
+      var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+      var r = window.location.search.substr(1).match(reg);
+      if (r != null) return decodeURI(r[2]);  return null;
+    }
+  })(jQuery);
+  if($.getUrlParam("token")!=null){
+    token = $.getUrlParam("token");
+  }
+
 export default {
-  name: 'app'
+  name: 'app',
+  data () {
+    return {
+      token:"",
+      userNo:"",
+      myMessage:{},
+      peopleList:{},
+      viplist:{},
+      lType:["女神系列","活泼可爱","工作达人","温文尔雅","心灵手巧"]
+    }
+  },
+  created : function(){
+    this.getmessage();
+  },
+  methods:{
+    getmessage(){
+      let vm = this;
+//判断是否注册
+      vm.$http.post('http://appinter.sunwoda.com/common/LoveTheSkyUser/loveTheSkyUser.json?token='+token).then((response) => {
+        console.log(response);
+        if(response.data.statusCode==0){//注册
+  //获取个人属性
+          vm.token=token;
+          vm.userNo=response.data.message;
+          vm.getMemessage(response.data.message);
+          vm.getList(response.data.message,"女神系列");
+          vm.getvipList(response.data.message,"推荐");
+        }else {//未注册
+          window.location.href="static/h5/index.html?token="+token;
+        }
+      }, (response) => {
+        console.log('error');
+      });
+    },
+    //获取个人信息
+    getMemessage(userNO){
+      let vm = this;
+      vm.$http.post('http://appinter.sunwoda.com/common/LoveTheSkyUser/findLoveTheSkyUser.json?userNo='+userNO+'&token='+token).then((response) => {
+        vm.myMessage=response.data.dataInfo.listData[0];
+        console.log( vm.myMessage);
+        if( vm.myMessage.gender==0){
+          vm.lType=["冷酷幽默","阳光少年","热心勇敢","智慧过人","冷静稳重"];
+        }
+      }, (response) => {
+        console.log('error');
+      });
+    },
+    //获取类型列表信息
+    getList(userNO,iTtype){
+      let vm = this;
+      //var href="http://172.16.98.74:8080/swdAPP/common/LoveTheSkyUser/LoveTheSkyUserIndex.json?userNo=170711129&pagesize=10&page=1"
+      var href="http://appinter.sunwoda.com/common/LoveTheSkyUser/findUserBytypes.json"
+      vm.$http.post(href+"?token="+token+"&userNo="+userNO+"&pageSize=6&page=1&lTypes="+iTtype
+       ).then((response) => {
+        vm.peopleList=response.data.dataInfo;
+        console.log(vm.peopleList);
+      }, (response) => {
+        console.log('error');
+      });
+    },
+    getvipList(userNO,iTtype){
+      let vm = this;
+      var href="http://appinter.sunwoda.com/common/LoveTheSkyUser/findUserBytypes.json"
+      vm.$http.post(href+"?token="+token+"&userNo="+userNO+"&pageSize=3&page=1&lTypes="+iTtype
+      ).then((response) => {
+        vm.vipList=response.data.dataInfo;
+        console.log(vm.vipList);
+      }, (response) => {
+        console.log('error');
+      });
+    }
+  }
 
 }
 </script>

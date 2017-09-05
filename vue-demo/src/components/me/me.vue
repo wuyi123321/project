@@ -3,17 +3,17 @@
      <div id="left">
        <div class="top">
          <div class="photo">
-           <div class="img"><img src="../../assets/photo.png"/></div>
+           <div class="img"><img v-bind:src="'http://appinter.sunwoda.com'+myMessage.photo" width="120" height="120"/></div>
          </div>
-         <div class="name">张三三</div>
+         <div class="name">{{myMessage.username}}</div>
        </div>
        <div class="basemessage">
          <ul @click="mesShow">
            <li>
-             <i class="icon-tablet"><span>18829891720</span></i>
+             <i class="icon-tablet"><span>{{myMessage.tel}}</span></i>
            </li>
            <li>
-             <i class="icon-user"><span>女</span><span>24岁</span><span>水瓶座</span><span>陕西安康</span></i>
+             <i class="icon-user"><span>{{myMessage.gender}}</span><span>24岁</span><span>水瓶座</span><span>{{myMessage.area}}</span></i>
            </li>
            <li>
              <i class="icon-exclamation-sign"><span>冷静女神</span><span>活泼可爱</span><span>工作达人</span></i>
@@ -34,21 +34,22 @@
   </div>
 </template>
 <script>
-  $.ajax({
-    type:"post",
-    url:"http://172.16.98.74:8080/swdAPP/common/LoveTheSkyUser/findLoveTheSkyUser.json",
-    dataType:"json",
-    data: {"token":"dcf88e4b2976b6c4eb50e65b27390552","userNo":"170711125"},
-    success:function(data){
-      console.log(data);
-    }});
+
 export default {
   name: 'hello',
+  props: {
+    myMessage:Object
+  },
   data () {
     return {
-
+      imgsrc:""
     }
   },
+
+  mounted: function () {
+    console.log(this.myMessage.photo);
+  },
+
   methods:{
     mesShow:function () {
       $("#right").animate({width:"100vw"},"fast")
@@ -56,6 +57,10 @@ export default {
     hidRight:function () {
       $("#right").animate({width:"0"},"fast")
     }
+  },
+  computed: {
+
+
   }
 }
 </script>

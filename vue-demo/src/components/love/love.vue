@@ -15,17 +15,19 @@
            <p><span>文学天地</span>人生若只如初见，何事秋风悲画扇？等闲变却故人心，却道故人心易变。
              骊山语罢清宵半，泪雨零铃终不怨。何如薄幸锦衣郎，比翼连枝当日愿</p>
          </div>
-         <div class="it_message">
+         <div class="it_message" v-for="item in 3">
            <div class="me_content">
            <div class="it_img"><img src="../../assets/photo.png" width="30" height="30"/></div>
-             <div class="name">张三三<i class="icon-thumbs-up"><span>50</span></i></div>
-             <div class="me_txt">等闲变却故人心，却道故人心易变</div>
-           </div>
-         </div>
-         <div class="it_message">
-           <div class="me_content">
-             <div class="it_img"><img src="../../assets/photo.png" width="30" height="30"/></div>
-             <div class="name">张三三</div>
+             <div class="name">张三三<i>
+               <el-popover
+               placement="bottom"
+               title="添加回复"
+               width="250"
+               trigger="click">
+               <el-input type="textarea" placeholder="期待您的神回复"></el-input>
+               <div class="submessage" @click="submessage" v-bind:id="item">确定</div>
+               <i class="icon-comment"  slot="reference"></i>
+             </el-popover></i></div>
              <div class="me_txt">等闲变却故人心，却道故人心易变</div>
            </div>
          </div>
@@ -50,7 +52,7 @@
 
 <script>
   import addItem from "@/components/love/addItem.vue";
-  import ElInput from "../../../node_modules/element-ui/packages/input/src/input.vue";
+
 export default {
   name: 'hello',
   data () {
@@ -71,7 +73,6 @@ export default {
     }
   },
   components: {
-    ElInput,
     addItem,
   }
 }
@@ -190,10 +191,7 @@ export default {
     float: right;
     line-height: 40px;
     color: #aaa;
-  }
-  #love .content .item .it_message .me_content .name i span{
-    padding-left: 10px;
-    font-size: 0.2rem;
+    font-size: 0.25rem;
   }
   #love .content .item .it_message .me_content .me_txt{
     clear: both;

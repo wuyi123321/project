@@ -48,17 +48,6 @@
     <div class="p_title">完善信息</div>
     <div class="content">
         <ul>
-            <li>
-              <span class="p_me">年龄</span><el-select v-model="age" placeholder="请选择" style="width:70%">
-              <el-option
-                v-for="item in ageselect"
-                :key="item"
-                :label="item"
-                :value="item">
-              </el-option>
-            </el-select>
-            </li>
-
           <li>
             <span class="p_me">生日</span><el-date-picker
               v-model="birthday"
@@ -83,10 +72,6 @@
           </el-input>
           </li>
           <li>
-            <span class="p_me">体重</span><el-input v-model="weight" placeholder="请填写体重信息（kg）" type="number" style="width:70%">
-          </el-input>
-          </li>
-          <li>
             <span class="p_me">学历</span><el-select v-model="education" placeholder="请选择" style="width:70%">
             <el-option
               v-for="item in educationselect"
@@ -97,7 +82,7 @@
           </el-select>
           </li>
           <li>
-            <span class="p_me">居住地</span><el-input v-model="area" placeholder="请填写居住地址（省、市、县）" style="width:70%">
+            <span class="p_me">籍贯</span><el-input v-model="area" placeholder="请填写籍贯地址（省、市）" style="width:70%">
           </el-input>
           </li>
 
@@ -127,7 +112,7 @@
 <div class="personmessage">
     <div class="p_title">结缘宣言</div>
     <div class="message">
-    <el-input type="textarea" style="height: 100%"></el-input>
+    <el-input type="textarea" style="height: 100%" v-model="pLanguage"></el-input>
     </div>
 </div>
   <div id="smallimages"  @click="det"></div>
@@ -148,7 +133,7 @@
 <script src="../comjs/vue@2.4.js"></script>
 <script src="../comjs/elejs.js"></script>
 <script>
-
+  var token="374f6675e70cb1a9a7c4a111f67cb9c0";
   function getFileUrl(inputid,i) {
     console.log(document.getElementById(inputid).files[i]);
     var url;
@@ -167,7 +152,7 @@
     type:"post",
     url:"http://appinter.sunwoda.com/common/getPersonalInfo.json",
     dataType:"json",
-    data: {"token":"dcf88e4b2976b6c4eb50e65b27390552"},
+    data: {"token":token},
     success:function(data){
     console.log(data)
       data=data.dataInfo.singleData;
@@ -176,7 +161,11 @@
        a.tel=data["tel"],
        a.userName=data["userName"],
        a.userNo=data["userNo"]
+      if(data["sex"]=="男"){
+        a.lTypesselect=["冷酷幽默","阳光少年","热心勇敢","智慧过人","冷静稳重"];
+      }
     }});
+
   var imgsrcs=[];
   var a= new Vue({
     el: '#main',
@@ -190,13 +179,10 @@
         tel:"",
         userName:"",
         userNo:"",
-        age:20,
         birthday:"",
-        ageselect:[15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40],
         monthlyIncome:"",
         monthlyIncomeselect:["3000以下","3000-5000","5000-8000","8000-10000","10000以上"],
         height:"",
-        weight:"",
         area:"",
         education:"",
         educationselect:["大专以下","专科","本科","研究生","博士","博士以上"],
@@ -204,7 +190,8 @@
         maritalStatusselect:["已婚","未婚"],
         lTypes:"",
         litnum:3,
-        lTypesselect:["冷静女神","活泼可爱","工作达人","温文尔雅","心灵手巧"]
+        lTypesselect:["女神系列","活泼可爱","工作达人","温文尔雅","心灵手巧"],
+        pLanguage:""
       }
     },
     methods: {
@@ -247,36 +234,36 @@
         }
         console.log(photo);
           var formData = new FormData();
+          formData.append('birthday',a.birthday);
+          formData.append('photo',photo);
           formData.append('userNo',a.userNo);
           formData.append('username',a.userName);
           formData.append('gender',sex);
-          formData.append('birthday',a.birthday);
+          formData.append('weight',0);
           formData.append('height',a.height);
-          formData.append('weight',a.weight);
           formData.append('education',a.education);
           formData.append('monthlyIncome',a.monthlyIncome);
           formData.append('area',a.area);
-          formData.append('token',"dcf88e4b2976b6c4eb50e65b27390552");
-          formData.append('maritalStatus',a.maritalStatus);
-          formData.append('photo',photo);
-          formData.append('lTypes',a.lTypes);
+          formData.append('token',token);
+          formData.append('department',a.deptName);
           formData.append('tel',a.tel);
-          formData.append('qq',"1107225119");
+          formData.append('lTypes',a.lTypes);
+          formData.append('pLanguage',a.pLanguage);
           $.ajax({
             type:"post",
-            url:"http://172.16.98.74:8080/swdAPP/common/LoveTheSkyUser/registerLoveTheSkyUser.json",
+            //url:"http://172.16.98.74:8080/swdAPP/common/LoveTheSkyUser/registerLoveTheSkyUser.json",
+            url:"http://appinter.sunwoda.com/common/LoveTheSkyUser/registerLoveTheSkyUser.json",
             data:formData,
             cache: false,
             contentType: false,
             processData:false,
             mimeType:"multipart/form-data",
             success:function(data){
-              console.log(data);
               var a=JSON.parse(data)
               $("#blackBg3").css("display","none");
               console.log(a["statusCode"]);
               if(a["statusCode"]==0){
-                window.location.href="../../index.html"
+                window.location.href="../../index.html?token="+token+""
               }
             }});
         }

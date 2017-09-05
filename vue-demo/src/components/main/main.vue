@@ -7,24 +7,24 @@
           </el-carousel>
           <div id="nav">
               <ul @click="show_type">
-                  <li>女神专栏</li>
-                  <li>活泼可爱</li>
-                  <li>工作达人</li>
+                  <li v-for="item in lType">{{item}}</li>
               </ul>
           </div>
           <div class="body">
-            <div class="title" v-model="type"> {{type}}</div>
+            <div class="title" v-model="type"> {{type}}<span @click="changeMesage">换一批</span></div>
             <div class="content">
               <ul>
-                <li v-for="item in 6" >
+                <li v-for="item in peopleListin.listData" >
                   <div class="img_item">
                     <div class="img_show" @click="showsee">
-                      <img src="../../assets/photo.png"/>
+                      <!--http://appinter.sunwoda.com/vehicle/upload/41968146088513111.jpg-->
+                      <!--<img src="http://appinter.sunwoda.com/img/loveTheSkyUser/user/1504322471225.png">-->
+                      <img  v-bind:src="'http://appinter.sunwoda.com'+item.photo"/>
                       <div class="see"><span>加关注</span> <span class="leave_message" >留言</span></div>
                     </div>
                     <div class="img_bottom">
-                      <span>信息中心</span>
-                      <span>信息中心</span>
+                      <span>{{item.area}}</span>
+                      <span>{{item.username}}</span>
                     </div>
                   </div>
                 </li>
@@ -32,37 +32,38 @@
             </div>
           </div>
           <div class="body">
-       <div class="title" v-model="type">工作达人</div>
+       <div class="title">单身推荐<span @click="getvip">换一批</span></div>
        <div class="content">
          <ul>
-           <li v-for="item in 2" class="list_item">
+           <li v-for="item in vipListin.listData" class="list_item">
              <div class="img_item">
                <div class="img_show" @click="showsee">
-                 <img src="../../assets/photo.png"/>
+                 <img v-bind:src="'http://appinter.sunwoda.com'+item.photo"/>
                  <div class="see"><span>加关注</span> <span class="leave_message" >留言</span></div>
                </div>
                <div class="person_message">
                 <table>
                   <tr>
                     <td>姓名</td>
-                    <td></td>
+                    <td>{{item.username}}<a href="../../../static/h5/index.html">注册</a></td>
                   </tr>
                   <tr>
-                    <td>年龄</td>
-                    <td></td>
+                    <td>身高</td>
+                    <td>{{item.height}}</td>
                   </tr>
                   <tr>
-                    <td>爱好</td>
-                    <td></td>
+                    <td>电话</td>
+                    <td>{{item.tel}}</td>
+                  </tr>
+                  <tr>
+                    <td>籍贯</td>
+                    <td>{{item.area}}</td>
                   </tr>
                   <tr>
                     <td>部门</td>
-                    <td></td>
+                    <td>{{item.department}}</td>
                   </tr>
-                  <tr>
-                    <td><a href="../../../static/h5/index.html">注册</a>微信号</td>
-                    <td></td>
-                  </tr>
+1212121
                 </table>
                </div>
              </div>
@@ -71,36 +72,72 @@
        </div>
      </div>
    </div>
-
-
 </template>
-
 <script>
 export default {
   name: 'hello',
+  props:{
+    peopleList:Object,
+    vipList:Object,
+    lType:Array,
+    token:String,
+    userNo:String
+  },
   data () {
     return {
-      type:"女神专栏",
+      peopleListin:{},
+      type:"",
+      vipListin:{}
     }
+  },
+  created: function(){
+    this.peopleListin=this.peopleList;
+    this.vipListin = this.vipList;
+    this.type=this.lType[0];
+    console.log(this.vipList)
   },
   methods:{
     showsee:function (event) {
       console.log(event.target.parentNode.lastChild);
       console.log($(".see"));
       event.target.parentNode.lastChild.setAttribute("style","display:block");
-//      $.ajax({
-//          type:"post",
-//          url:"http://appinter.sunwoda.com/ekp/ekpVehicleInfoDetail.json",
-//          dataType:"json",
-//          data: {"token":"445555","plateNumber":"122"},
-//          success:function(data){
-//            console.log(data);
-//          }});
     },
     show_type:function (event) {
-      this.type=event.target.innerHTML;
+        this.type=event.target.innerHTML;
+        this.getType(3,1,this.type);
+      },
+    changeMesage:function () {
+      var i=1;
+      i++;
+      this.getType(3,i,this.type);
+    },
+    getType:function (num,page,type) {
+      var vm=this;
+      var href="http://appinter.sunwoda.com/common/LoveTheSkyUser/findUserBytypes.json";
+      vm.$http.post(href+"?token="+this.token+"&userNo="+this.userNo+"&pageSize="+3+"&page="+page+"&lTypes="+type
+      ).then((response) => {
+        console.log(response);
+        vm.peopleListin=response.data.dataInfo;
+      }, (response) => {
+        console.log('error');
+      });
+    },
+    getvip:function () {
+      var i=0;
+      i++;
+      var vm=this;
+      var href="http://appinter.sunwoda.com/common/LoveTheSkyUser/findUserBytypes.json";
+      vm.$http.post(href+"?token="+this.token+"&userNo="+this.userNo+"&pageSize="+10+"&page="+1+"&lTypes=推荐"
+      ).then((response) => {
+        console.log(response);
+        vm.vipListin=response.data.dataInfo;
+      }, (response) => {
+        console.log('error');
+      });
     }
-  }
+
+  },
+
 }
 </script>
 
@@ -124,7 +161,7 @@ export default {
 .block{
   width: 100%;
   height: 100%;
- b
+
 }
 #nav{
     height: 25px;
@@ -133,14 +170,15 @@ export default {
     width: 100%;
     height: 100%;
     border-bottom: solid #fda7f7 1px;
+  display: flex;
 }
 #nav ul li{
+     flex:1;
     float: left;
     font-size: 0.25rem;
     height: 100%;
-    padding-right: 10px;
     line-height: 25px;
-    margin-left: 10px;
+  text-align: center;
     border-right: solid #eeeeee 1px;
 }
   .body{
@@ -153,14 +191,20 @@ export default {
     font-size: 0.25rem;
     color: #fda7f7;
   }
+.body .title span{
+  display: inline-block;
+  float: right;
+  margin-right:2%;
+}
   .content ul{
     zoom:1;
+    margin-top: 0.15rem;
   }
 .content ul:after{
   clear:both;
   display:block;
   content:"";
-  height:0px;
+  height:0;
   overflow:hidden;
 }
 .content ul li{
@@ -198,8 +242,6 @@ export default {
 }
 .content .list_item{
   width: 95%;
-  margin-top: 10px;
-
 }
 .list_item .img_show{
   float: left;
@@ -209,14 +251,38 @@ export default {
   float: right;
   background: #eee;
   font-size: 0.25rem;
+  overflow: hidden;
+
 }
 .person_message table{
   height: 35vw;
+  width: 100%;
+  text-overflow:ellipsis;
+  border-top: #ffffff 1px solid;
+}
+
+.person_message table tr{
+  width: 100%;
+}
+.block .person_message table:first-child{
+  border: hidden;
+}
+.person_message table tr td{
+  overflow: hidden;
+  text-overflow:ellipsis;
+  white-space: nowrap;
+  padding-left: 0.1rem;
+  border-top: #ffffff 1px solid;
 }
 .content .img_bottom{
   height: 20px;
   line-height: 20px;
   width: 100%;
-font-size: 0.2rem;
+  font-size: 0.2rem;
+  display: flex;
+}
+.content .img_bottom span{
+  flex: 1;
+  text-align: center;
 }
 </style>
