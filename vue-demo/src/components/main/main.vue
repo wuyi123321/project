@@ -43,9 +43,9 @@
                </div>
                <div class="person_message">
                 <table>
-                  <tr>
-                    <td>姓名</td>
-                    <td>{{item.username}}<a href="../../../static/h5/index.html">注册</a></td>
+                  <tr >
+                    <td style="border: none">姓名</td>
+                    <td style="border: none">{{item.username}}<a href="../../../static/h5/index.html">注册</a></td>
                   </tr>
                   <tr>
                     <td>身高</td>
@@ -63,7 +63,6 @@
                     <td>部门</td>
                     <td>{{item.department}}</td>
                   </tr>
-1212121
                 </table>
                </div>
              </div>
@@ -87,7 +86,9 @@ export default {
     return {
       peopleListin:{},
       type:"",
-      vipListin:{}
+      vipListin:{},
+      flag:1,
+      flag1:1
     }
   },
   created: function(){
@@ -107,14 +108,14 @@ export default {
         this.getType(3,1,this.type);
       },
     changeMesage:function () {
-      var i=1;
-      i++;
-      this.getType(3,i,this.type);
+     this.flag++;
+      this.getType(3,this.flag,this.type);
     },
+    //获取不同类型的用户
     getType:function (num,page,type) {
       var vm=this;
       var href="http://appinter.sunwoda.com/common/LoveTheSkyUser/findUserBytypes.json";
-      vm.$http.post(href+"?token="+this.token+"&userNo="+this.userNo+"&pageSize="+3+"&page="+page+"&lTypes="+type
+      vm.$http.get(href+"?token="+this.token+"&userNo="+this.userNo+"&pageSize="+6+"&page="+page+"&lTypes="+type
       ).then((response) => {
         console.log(response);
         vm.peopleListin=response.data.dataInfo;
@@ -122,12 +123,12 @@ export default {
         console.log('error');
       });
     },
+    //获取推荐用户的数据
     getvip:function () {
-      var i=0;
-      i++;
+      this.flag1++;
       var vm=this;
       var href="http://appinter.sunwoda.com/common/LoveTheSkyUser/findUserBytypes.json";
-      vm.$http.post(href+"?token="+this.token+"&userNo="+this.userNo+"&pageSize="+10+"&page="+1+"&lTypes=推荐"
+      vm.$http.get(href+"?token="+this.token+"&userNo="+this.userNo+"&pageSize="+3+"&page="+this.flag1+"&lTypes=推荐"
       ).then((response) => {
         console.log(response);
         vm.vipListin=response.data.dataInfo;
@@ -212,6 +213,7 @@ export default {
   width: 30vw;
   float: left;
   border: solid #eee 1px;
+  margin-top:0.1rem ;
 }
 .content  ul li .img_item{
   width: 100%;
@@ -259,13 +261,11 @@ export default {
   width: 100%;
   text-overflow:ellipsis;
   border-top: #ffffff 1px solid;
+  border-bottom: #ffffff 1px solid;
 }
 
 .person_message table tr{
   width: 100%;
-}
-.block .person_message table:first-child{
-  border: hidden;
 }
 .person_message table tr td{
   overflow: hidden;

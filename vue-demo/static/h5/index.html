@@ -233,40 +233,40 @@
           sex=0;
         }
         console.log(photo);
-          var formData = new FormData();
-          formData.append('birthday',a.birthday);
-          formData.append('photo',photo);
-          formData.append('userNo',a.userNo);
-          formData.append('username',a.userName);
-          formData.append('gender',sex);
-          formData.append('weight',0);
-          formData.append('height',a.height);
-          formData.append('education',a.education);
-          formData.append('monthlyIncome',a.monthlyIncome);
-          formData.append('area',a.area);
-          formData.append('token',token);
-          formData.append('department',a.deptName);
-          formData.append('tel',a.tel);
-          formData.append('lTypes',a.lTypes);
-          formData.append('pLanguage',a.pLanguage);
-          $.ajax({
-            type:"post",
-            //url:"http://172.16.98.74:8080/swdAPP/common/LoveTheSkyUser/registerLoveTheSkyUser.json",
-            url:"http://appinter.sunwoda.com/common/LoveTheSkyUser/registerLoveTheSkyUser.json",
-            data:formData,
-            cache: false,
-            contentType: false,
-            processData:false,
-            mimeType:"multipart/form-data",
-            success:function(data){
-              var a=JSON.parse(data)
-              $("#blackBg3").css("display","none");
-              console.log(a["statusCode"]);
-              if(a["statusCode"]==0){
-                window.location.href="../../index.html?token="+token+""
-              }
-            }});
-        }
+        var formData = new FormData();
+        formData.append('birthday',a.birthday);
+        formData.append('photo',photo);
+        formData.append('userNo',a.userNo);
+        formData.append('username',a.userName);
+        formData.append('gender',sex);
+        formData.append('weight',0);
+        formData.append('height',a.height);
+        formData.append('education',a.education);
+        formData.append('monthlyIncome',a.monthlyIncome);
+        formData.append('area',a.area);
+        formData.append('token',token);
+        formData.append('department',a.deptName);
+        formData.append('tel',a.tel);
+        formData.append('lTypes',a.lTypes);
+        formData.append('pLanguage',a.pLanguage);
+        $.ajax({
+          type:"post",
+          //url:"http://172.16.98.74:8080/swdAPP/common/LoveTheSkyUser/registerLoveTheSkyUser.json",
+          url:"http://appinter.sunwoda.com/common/LoveTheSkyUser/registerLoveTheSkyUser.json",
+          data:formData,
+          cache: false,
+          contentType: false,
+          processData:false,
+          mimeType:"multipart/form-data",
+          success:function(data){
+            var a=JSON.parse(data)
+            $("#blackBg3").css("display","none");
+            console.log(a["statusCode"]);
+            if(a["statusCode"]==0){
+              window.location.href="../../index.html?token="+token+""
+            }
+          }});
+      }
 
       }
 

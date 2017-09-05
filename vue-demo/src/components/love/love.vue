@@ -2,23 +2,22 @@
    <div id="love">
      <div id="top">
        <div class="item">关注</div>
-       <div class="item">推荐</div>
+       <div class="item" @click="getList">推荐</div>
        <div class="item" @click="addShow"><i class="icon-plus"></i></div>
        <div class="item">图片</div>
-       <div class="item">文字</div>
+       <div class="item" @click="mytolk">我的</div>
      </div>
-     <add-item id="addItem"></add-item>
+     <add-item id="addItem" :userNo="userNo" :token="token"></add-item>
      <div class="content">
-       <div class="item" v-for="item in 4">
-         <div class="it_top"><div class="it_img"><img src="../../assets/photo.png" width="30" height="30"/></div><div class="name">张三三</div></div>
+       <div class="item" v-for="item in tleTolk">
+         <div class="it_top"><div class="it_img"><img v-bind:src="'http://appinter.sunwoda.com'+item.photo" width="30" height="30"/></div><div class="name">{{item.userName}}</div></div>
          <div class="it_content">
-           <p><span>文学天地</span>人生若只如初见，何事秋风悲画扇？等闲变却故人心，却道故人心易变。
-             骊山语罢清宵半，泪雨零铃终不怨。何如薄幸锦衣郎，比翼连枝当日愿</p>
+           <p><span>{{item.type}}</span>{{item.message}}</p>
          </div>
-         <div class="it_message" v-for="item in 3">
+         <div class="it_message" v-for="item in item.listReply">
            <div class="me_content">
            <div class="it_img"><img src="../../assets/photo.png" width="30" height="30"/></div>
-             <div class="name">张三三<i>
+             <div class="name">{{item.userName}}<i>
                <el-popover
                placement="bottom"
                title="添加回复"
@@ -28,19 +27,19 @@
                <div class="submessage" @click="submessage" v-bind:id="item">确定</div>
                <i class="icon-comment"  slot="reference"></i>
              </el-popover></i></div>
-             <div class="me_txt">等闲变却故人心，却道故人心易变</div>
+             <div class="me_txt">{{item.pMessage}}</div>
            </div>
          </div>
          <div class="it_bottom">
-           <i class="icon-thumbs-up"><span>50</span></i>
-           <i class="icon-thumbs-down"><span>50</span></i>
+           <i class="icon-thumbs-up" @click="total"  v-bind:id="item.messageId"><span>{{item.total}}</span></i>
+           <i class="icon-thumbs-down" @click="dTotal"  v-bind:id="item.messageId"><span>{{item.dTotal}}</span></i>
            <i><el-popover
              placement="bottom"
              title="添加回复"
              width="250"
              trigger="click">
-             <el-input type="textarea" placeholder="期待您的神回复"></el-input>
-             <div class="submessage" @click="submessage" v-bind:id="item">确定</div>
+             <el-input type="textarea" placeholder="期待您的神回复" v-model="replay"></el-input>
+             <div class="submessage" @click="submessage" v-bind:id="item.messageId">确定</div>
            <i class="icon-comment"  slot="reference"></i>
            </el-popover>
            </i>
@@ -52,13 +51,20 @@
 
 <script>
   import addItem from "@/components/love/addItem.vue";
-
 export default {
   name: 'hello',
+  props:{
+    userNo:String,
+    token:String,
+  },
   data () {
     return {
-      msg: 'Welcome to Your Vue.js App'
+      tleTolk:[],
+      replay:""
     }
+  },
+  mounted: function () {
+   this.getList();
   },
   methods:{
     addShow:function () {
@@ -67,9 +73,68 @@ export default {
     remove_add:function () {
       $("#addItem").animate({height:"0"},"fast")
     },
+    //评论
     submessage:function (event) {
       console.log(event.target.getAttribute("id"));
-      this.$message('提交成功');
+      var totolkId=event.target.getAttribute("id");
+      var vm=this;
+      var href="http://appinter.sunwoda.com/common/LoveTheSkyUser/insertReply.json";
+      vm.$http.get(href+"?pUSerNo="+this.userNo+"&token="+this.token+"&pMessage="+this.replay+"&pMessageId="+totolkId
+      ).then((response) => {
+        console.log(response);
+        this.$message('提交成功');
+      }, (response) => {
+        console.log('error');
+      });
+
+    },
+    total:function(event){
+      console.log(event.target.getAttribute("id"));
+      var messId=event.target.getAttribute("id");
+      this.setsee(messId,0);
+    },
+    dTotal:function (event) {
+      console.log(event.target.getAttribute("id"));
+      var messId=event.target.getAttribute("id");
+      this.setsee(messId,1);
+    },
+
+    //点赞和点差方法
+    setsee:function (messId,type) {
+      var href="http://appinter.sunwoda.com/common/LoveTheSkyUser/thumbsUpMessage.json";
+      this.$http.get(href+"?token="+this.token+"&tMessageId="+messId+"&tType="+type+"&userNo="+this.userNo
+      ).then((response) => {
+        console.log(response);
+
+      }, (response) => {
+        console.log('error');
+      });
+    },
+    //获取我的说说
+    mytolk:function () {
+      var vm=this;
+      var href="http://appinter.sunwoda.com/common/LoveTheSkyUser/findStatement.json";
+      vm.$http.get(href+"?token="+this.token+"&pageSize="+10+"&page=1&userNo="+this.userNo
+      ).then((response) => {
+        console.log(response);
+        vm.tleTolk=response.data.dataInfo.listData;
+        console.log(vm.tleTolk);
+      }, (response) => {
+        console.log('error');
+      });
+    },
+    //获取数据
+    getList:function () {
+      var vm=this;
+      var href="http://appinter.sunwoda.com/common/LoveTheSkyUser/findStatement.json";
+      vm.$http.get(href+"?token="+this.token+"&pageSize="+10+"&page=1"
+      ).then((response) => {
+        console.log(response);
+       vm.tleTolk=response.data.dataInfo.listData;
+       console.log(vm.tleTolk);
+      }, (response) => {
+        console.log('error');
+      });
     }
   },
   components: {

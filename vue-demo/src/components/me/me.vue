@@ -13,10 +13,10 @@
              <i class="icon-tablet"><span>{{myMessage.tel}}</span></i>
            </li>
            <li>
-             <i class="icon-user"><span>{{myMessage.gender}}</span><span>24岁</span><span>水瓶座</span><span>{{myMessage.area}}</span></i>
+             <i class="icon-user"><span>{{sex}}</span><span>{{myMessage.education}}</span><span>{{myMessage.height}}</span><span>{{myMessage.area}}</span></i>
            </li>
            <li>
-             <i class="icon-exclamation-sign"><span>冷静女神</span><span>活泼可爱</span><span>工作达人</span></i>
+             <i class="icon-exclamation-sign"><span>{{myMessage.department}}</span></i>
            </li>
          </ul>
          <div class="right">
@@ -24,7 +24,8 @@
          </div>
 
        </div>
-       <div class="">
+       <div class="loveSay">
+         <p>在那了断桥之上，白娘子在一个飘雨的时刻，满怀着憧憬与出其不意的期待，与迎来之人，撞个满怀，也便注定了一生一世的相随相守，影一个千年不变的神话，在时空的里演绎，在和风里细腻</p>
        </div>
      </div>
      <div id="right">
@@ -42,12 +43,13 @@ export default {
   },
   data () {
     return {
-      imgsrc:""
+      sex:""
     }
   },
 
   mounted: function () {
-    console.log(this.myMessage.photo);
+    this. getsex;
+    console.log(this.myMessage.gender);
   },
 
   methods:{
@@ -59,8 +61,13 @@ export default {
     }
   },
   computed: {
-
-
+    getsex:function() {
+      if(this.myMessage.gender==0){
+        this.sex="女"
+      }else {
+        this.sex="男"
+      }
+    }
   }
 }
 </script>
@@ -71,6 +78,7 @@ export default {
     clear: both;
     height: 100%;
     overflow: hidden;
+    font-size: 0.25rem;
   }
 #me .photo{
   margin: 0 auto;
@@ -139,5 +147,12 @@ export default {
     text-align: center;
     font-size: 0.3rem;
     margin-top: 0.2rem;
+  }
+  #me #left .loveSay{
+    color: #555;
+    border-bottom: solid 1px #fda7f7;
+  }
+  #me #left .loveSay p{
+    padding: 0.2rem;
   }
 </style>

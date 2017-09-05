@@ -8,7 +8,7 @@ import 'element-ui/lib/theme-default/index.css'
 import jquery from '../static/comjs/jquery'
 import axios from 'axios'
 Vue.prototype.$http = axios;
-Vue.config.productionTip = false;
+// Vue.config.productionTip = false;
 Vue.use(ElementUI);
 Vue.use(jquery);
 /* eslint-disable no-new */

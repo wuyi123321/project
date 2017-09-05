@@ -1,6 +1,6 @@
 <template>
   <div class="addItem" id="addItem">
-    <div class="add_top"><i class="icon-remove" @click="remove_add"></i><span>发表</span></div>
+    <div class="add_top"><i class="icon-remove" @click="remove_add"></i><span @click="subm">发表</span></div>
     <div class="add_content">
       <el-select v-model="addType" placeholder="选择话题" filterable allow-create>
         <el-option
@@ -44,7 +44,10 @@
   }
   var flag=0;
   export default {
-
+    props:{
+      userNo:String,
+      token:String,
+    },
     data() {
       return {
         options: [{
@@ -107,8 +110,35 @@
         }
         console.log(this.imgsrcs);
       },
+      subm:function () {
 
+    $("#blackBg3").css("display","block");
+        var formData = new FormData();
+        for(var k in this.imgsrcs){ //文件数组
+          formData.append('pPath',imgsrcs[k]);
+        }
+        formData.append('type',this.addType);
+        formData.append('message',this.addContent);
+        formData.append('userNo',this.userNo);
+        formData.append('token',this.token);
+        console.log(this.userNo+this.imgsrcs+this.addContent+this.addType+this.token)
+        $.ajax({
+          type:"post",
+          url:"http://appinter.sunwoda.com/common/LoveTheSkyUser/makeStatement.json",
+          data:formData,
+          cache: false,
+          contentType: false,
+          processData:false,
+          mimeType:"multipart/form-data",
+          success:function(data){
+            console.log(data);
+            var a=JSON.parse(data)
+            $("#blackBg3").css("display","none");
+
+         }});
+      }
     },
+
   }
 </script>
 
