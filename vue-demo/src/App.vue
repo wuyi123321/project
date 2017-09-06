@@ -11,8 +11,8 @@
 </template>
 <script>
   import $ from 'jquery'
-  var token = "00098635bd29551e6151a76edd395cec";
- //var token = "7d37573b9e465f676ecc233c4b72cbeb";
+  //var token = "00098635bd29551e6151a76edd395cec";
+ var token = "7d37573b9e465f676ecc233c4b72cbeb";
   (function ($) {
     $.getUrlParam = function (name) {
       var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");

@@ -115,7 +115,7 @@
     $("#blackBg3").css("display","block");
         var formData = new FormData();
         for(var k in this.imgsrcs){ //文件数组
-          formData.append('pPath',imgsrcs[k]);
+          formData.append('pPath',this.imgsrcs[k]);
         }
         formData.append('type',this.addType);
         formData.append('message',this.addContent);
