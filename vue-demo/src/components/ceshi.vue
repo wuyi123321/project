@@ -15,7 +15,7 @@
     data () {
       return {
         counter : 1, //默认已经显示出15条数据 count等于一是让从16条开始加载
-        num : 15,  // 一次显示多少条
+        num : 10,  // 一次显示多少条
         pageStart : 0, // 开始页数
         pageEnd : 0, // 结束页数
         listdata: [], // 下拉更新数据存放数组
@@ -29,7 +29,7 @@
       getList(){
         let vm = this;
         vm.$http.get('https://api.github.com/repos/typecho-fans/plugins/contents/').then((response) => {
-          vm.listdata = response.data.slice(0,15);
+          vm.listdata = response.data.slice(0,10);
         }, (response) => {
           console.log('error');
         });

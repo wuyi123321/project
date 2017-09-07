@@ -10,10 +10,11 @@
   </div>
 </template>
 <script>
-  import $ from 'jquery'
+ import $ from 'jquery'
   //var token = "00098635bd29551e6151a76edd395cec";
  var token = "7d37573b9e465f676ecc233c4b72cbeb";
-  (function ($) {
+
+ (function ($) {
     $.getUrlParam = function (name) {
       var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
       var r = window.location.search.substr(1).match(reg);
@@ -51,6 +52,12 @@ export default {
           vm.getMemessage(response.data.message);  //获取个人属性
           vm.getList(response.data.message);//获取主页信息
           vm.getvipList(response.data.message,"推荐");
+          var websocket = null;
+          websocket = new WebSocket("ws://appinter.sunwoda.com:9002/springws/websocket?token="+token);
+          websocket.onopen =this.onOpen;
+          websocket.onmessage =this.onMessage;
+          websocket.onerror = this.onError;
+          websocket.onclose = this.onClose;
         }else {//未注册
           window.location.href="static/h5/index.html?token="+token;
         }
@@ -58,6 +65,32 @@ export default {
         console.log('error');
       });
     },
+    onOpen: function(openEvt) {
+   console.log(openEvt);
+ },
+
+    onMessage:function (evt) {
+   alert(evt.data);
+
+ },
+    onError:function()  {},
+    onClose:function() {},
+
+    doSendfunction () {
+   if (websocket.readyState == (websocket.OPEN==undefined?1:websocket.OPEN)) {
+     var msg = document.getElementById("inputMsg").value;
+     var socketMsg={
+       status:"1",
+       userNo:"170711125",//要发送消息的用户的userId,ALL为发送给所有人
+       msg:msg
+     }
+     websocket.send(JSON.stringify(socketMsg));//调用后台handleTextMessage方法
+     alert("发送成功!");
+   } else {
+     alert("连接失败!");
+   }
+ },
+
     //获取个人信息
     getMemessage(userNO){
       let vm = this;
@@ -99,6 +132,10 @@ export default {
   }
 
 }
+ window.close=function()
+ {
+   websocket.onclose();
+ }
 </script>
 
 <style>

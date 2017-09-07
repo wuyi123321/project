@@ -20,7 +20,7 @@
            </div>
          </div>
          <el-collapse accordion>
-           <el-collapse-item v-for="item in item.listReply" class="it_message">
+           <el-collapse-item v-for="item in item.listReply" class="it_message" :key="item.fId">
              <template slot="title">
                <div class="me_content">
                  <div class="it_img"><img @click="showPeople" v-bind:id="item.pUSerNo" v-bind:src="'http://appinter.sunwoda.com'+item.photo" width="30" height="30"/></div>
@@ -40,7 +40,7 @@
              <div v-for="item in item.listReply">
                <div class="me_content">
                <div class="it_img"><img @click="showPeople" v-bind:id="item.pUSerNo" v-bind:src="'http://appinter.sunwoda.com'+item.photo" width="30" height="30"/></div>
-               <div class="name">{{item.userName}}<i>
+               <div class="name">{{item.userName}}<span style="margin-left: 5px;margin-right: 5px">回复</span>{{item.fName}}<i>
                  <el-popover
                    placement="bottom"
                    title="添加回复"
@@ -69,7 +69,7 @@
            </el-popover>
            </i>
          </div>
-       </div>1212
+       </div>
      </div>
      <person id="me" :myMessage="peopleMessage"></person>
    </div>
@@ -289,7 +289,6 @@ export default {
   }
 #love .content .item .it_content .showImgs{
   display: flex;
-  justify-content: center;
   flex-wrap: wrap
 
 }
@@ -298,6 +297,7 @@ export default {
   padding: 0.1rem;
   overflow: hidden;
   min-width: 30vw;
+  max-width: 30vw;
   width: 30vw;
   height: 30vw;
 }
@@ -343,7 +343,7 @@ export default {
     overflow: hidden;
   }
   #love .content .item .it_message .me_content .name{
-    width:50%;
+    width:80%;
     display: inline-block;
     height: 40px;
     float: right;
