@@ -134,17 +134,16 @@ export default {
 .yo-scroll {
   font-size: 0.3rem;
   position: absolute;
-  top: 2.5rem;
+  top:0;
   right: 0;
   bottom: 0;
   left: 0;
   overflow: auto;
   -webkit-overflow-scrolling: touch;
-  background-color: #ddd
 }
 .yo-scroll .inner {
   position: absolute;
-  top: -2rem;
+  top: -0.5rem;
   width: 100%;
   transition-duration: 300ms;
 }
@@ -153,7 +152,7 @@ export default {
   left: 0;
   top: 0;
   width: 100%;
-  height: 2rem;
+  height: 0.5rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -176,7 +175,7 @@ export default {
   display: none;
 }
 .yo-scroll .load-more {
-  height: 3rem;
+  height: 1rem;
   display: flex;
   align-items: center;
   justify-content: center;
