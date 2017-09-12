@@ -111,7 +111,7 @@
         console.log(this.imgsrcs);
       },
       subm:function () {
-
+       var vm = this;
     $("#blackBg3").css("display","block");
         var formData = new FormData();
         for(var k in this.imgsrcs){ //文件数组
@@ -134,7 +134,7 @@
             console.log(data);
             var a=JSON.parse(data)
             $("#blackBg3").css("display","none");
-
+            vm.$emit('close');
          }});
       }
     },

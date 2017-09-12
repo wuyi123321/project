@@ -7,7 +7,7 @@
       <div class="item">图片</div>
       <div class="item" @click="mytolk">我的</div>
     </div>
-    <add-item id="addItem" :userNo="userNo" :token="token"></add-item>
+    <add-item id="addItem" :userNo="userNo" :token="token" :close="remove_add"></add-item>
     <Scroll :on-refresh="onRefresh" :on-infinite="onInfinite" id="scoll"><div class="content">
       <div class="item" v-for="item in tleTolk">
         <div class="it_top"><div class="it_img" ><img @click="showPeople" v-bind:id="item.userNo" v-bind:src="'http://appinter.sunwoda.com'+item.photo" width="30" height="30"/></div><div class="name">{{item.userName}}</div></div>
@@ -71,7 +71,7 @@
         </div>
       </div>
     </div></Scroll>
-    <person id="me" :myMessage="peopleMessage"></person>
+    <person id="me" :myMessage="peopleMessage" :websocket="websocket"  ></person>
     <bigImg v-if="showImg" @clickit="viewImg" :imgSrc="imgSrc"></bigImg>
   </div>
 </template>
@@ -86,6 +86,7 @@
     props:{
       userNo:String,
       token:String,
+      websocket:WebSocket
     },
     data () {
       return {
@@ -101,21 +102,21 @@
       this.getList();
     },
     methods:{
-      clickImg(e) {
+      clickImg(e) {//图片放大
         this.showImg = true;
         // 获取当前图片地址
         this.imgSrc = e.currentTarget.src;
       },
-      viewImg(){
+      viewImg(){//图片隐藏
         this.showImg = false;
       },
-      addShow:function () {
+      addShow:function () {//开始添加说说
         $("#addItem").animate({height:"100vh"},"fast")
       },
-      remove_add:function () {
+      remove_add:function () {//关闭添加
         $("#addItem").animate({height:"0"},"fast")
       },
-      showPeople:function () {
+      showPeople:function () {//人物展示页面显示
         var perNo=event.target.getAttribute("id");
         this.getPeopleMemessage(perNo);
         $("#me").animate({width:"100vw"},"fast")
@@ -133,11 +134,10 @@
           var href="http://appinter.sunwoda.com/common/LoveTheSkyUser/insertReply.json";
           vm.$http.get(href+"?pUSerNo="+this.userNo+"&token="+this.token+"&pMessage="+this.replay+"&pMessageId="+totolkId+"&fId="+fId
           ).then((response) => {
-
             if(response.data.message=="操作成功"){
               this.$message('提交成功');
               this.replay="";
-              vm.getList();
+              vm.go(0);
               $(".el-popover").css("display","none");
             }else {
               this.$message('评论失败');
@@ -148,22 +148,23 @@
         }else {
           this.$message('评论不能为空');
         }
-
-
       },
+      //点赞
       total:function(event){
         console.log(event.target.getAttribute("id"));
         var messId=event.target.getAttribute("id");
-        this.setsee(messId,1);
+        this.setsee(messId,1,event);
       },
+      //点差
       dTotal:function (event) {
         console.log(event.target.getAttribute("id"));
         var messId=event.target.getAttribute("id");
-        this.setsee(messId,-1);
+        this.setsee(messId,-1,event);
       },
       //点赞和点差方法
-      setsee:function (messId,type) {
-        console.log(this.userNo+this.token);
+      setsee:function (messId,type,event) {
+        console.log( event.target.firstChild.innerHTML);
+        var num=parseInt(event.target.firstChild.innerHTML);
         var vm = this;
         var href="http://appinter.sunwoda.com/common/LoveTheSkyUser/thumbsUpMessage.json";
         this.$http.get(href+"?token="+this.token+"&tMessageId="+messId+"&tType="+type+"&tUserNo="+this.userNo
@@ -172,7 +173,7 @@
             this.$message('您已经点过赞');
           }else if(response.data.message=="操作成功"){
             this.$message('提交成功');
-            vm.getList();
+            event.target.firstChild.innerHTML = num+1;
           }
           console.log(response);
         }, (response) => {
@@ -205,12 +206,14 @@
           console.log('error');
         });
       },
+      //下拉刷新
       onRefresh:function(done) {
         this.getList();
         this.counter=1;
         done() // call done
         this.$el.querySelector('.load-more').style.display = 'block';
       },
+      //上拉加载
       onInfinite:function(done) {
         let vm = this;
         this.counter++

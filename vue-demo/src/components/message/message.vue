@@ -18,16 +18,54 @@
              </div>
            </li>
          </ul>
+        <el-popover
+          ref="popover1"
+          placement="left"
+          title="验证消息"
+          width="220"
+          trigger="click">
+           <div v-for="i in adi" class="add_item">
+                 {{i.friendNo}}
+                 {{i.msg}}
+             <div class="tof">
+               <span :id="i.friendNo" @click="agree">同意添加</span> <span @click="disagree">不同意</span>
+             </div>
+           </div>
+        </el-popover>
+         <div id="addMes" v-popover:popover1>好友请求
+         </div>
       </div>
 </template>
 
 <script>
 export default {
   name: 'hello',
+  props:{
+    addFmes:Array,
+    userNo:String,
+    token:String,
+  },
   data () {
     return {
-      msg: 'Welcome to Your Vue.js App'
+      msg: 'Welcome to Your Vue.js App',
+      adi:[
+        {"friendNo":"170711129","status":2,"userNo":"141225004","msg":"请求加为好友"},
+        {"friendNo":"170711125","status":2,"userNo":"141225004","msg":"请求加为好友"}
+        ]
+
     }
+  },
+  mounted: function () {
+    console.log("Aa")
+    console.log("sada");
+    var vm = this;
+    var href="http://appinter.sunwoda.com/common/lsfriend/friendInfo.json";
+    vm.$http.get(href+"?token="+this.token
+    ).then((response) => {
+      console.log(response);
+    }, (response) => {
+      console.log('error');
+    });
   },
   methods: {
     sendmessage:function (event) {
@@ -35,6 +73,39 @@ export default {
       console.log(event.target.parentNode.parentNode.getAttribute("id"))
       window.location.href="../../static/h5/message.html?tolkTo="+a;
     },
+    agree:function (event) {
+      var vm = this;
+      var perNo=event.target.getAttribute("id");
+      console.log(perNo);
+      var href="http://appinter.sunwoda.com/common/lsfriend/addFriend.json";
+      vm.$http.get(href+"?token="+this.token+"&userNo="+this.userNo+"&friendNo="+perNo+"&status=0"
+      ).then((response) => {
+        console.log();
+        if(response.data.message=="操作成功"){
+         vm.$message('添加成功');
+          event.target.parentNode.parentNode.innerHTML=null;
+        }else {
+          vm.$message(response.data.message);
+        }
+
+      }, (response) => {
+        console.log('error');
+      });
+    },
+    disagree:function (event) {
+      event.target.parentNode.parentNode.innerHTML=null;
+    },
+    getFriList:function () {
+      console.log("sada");
+      var vm = this;
+      var href="http://appinter.sunwoda.com/common/lsfriend/friendInfo.json";
+      vm.$http.get(href+"?token="+this.token
+      ).then((response) => {
+        console.log(response);
+      }, (response) => {
+        console.log('error');
+      });
+    }
   }
 }
 </script>
@@ -46,6 +117,38 @@ export default {
   border-bottom: solid #eee 1px;
   font-size: 0.35rem;
   position: relative;
+}
+#message #addMes{
+  position: fixed;
+  top: 40%;
+  right: 0px;
+  display: flex;
+  justify-content: center ;
+  align-items: center;
+  width: 70px;
+  height:20px;
+  border-radius: 10px;
+  background:#afddff ;
+  border: 1px solid #afddff;
+  font-size: 0.01rem;
+}
+
+.el-popover .add_item{
+
+  width: 100%;
+  border-top: solid 1px #eeeeee;
+}
+.el-popover .add_item .tof{
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+.el-popover .add_item span{
+  display: inline-block;
+  padding-right: 5px;
+  height: 25px;
+  line-height: 25px;
 }
 #message ul li .img{
   height: 39px;

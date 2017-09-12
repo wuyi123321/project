@@ -39,7 +39,7 @@
              <div class="img_item">
                <div class="img_show" @click="showsee">
                  <img v-bind:src="'http://appinter.sunwoda.com'+item.photo"/>
-                 <div class="see"><span>加关注</span> <span class="leave_message" >留言</span></div>
+                 <div class="see"><span :id="item.userNo">加好友</span> <span class="leave_message" >留言</span></div>
                </div>
                <div class="person_message">
                 <table>
@@ -73,6 +73,7 @@
    </div>
 </template>
 <script>
+
 export default {
   name: 'hello',
   props:{
@@ -96,7 +97,13 @@ export default {
     this.peopleListin=this.peopleList;
     this.vipListin = this.vipList;
     this.type=this.lType[0];
-    console.log(this.vipList)
+    console.log(this.vipList);
+    var websocket = null;
+//    $websocket = new WebSocket("ws://appinter.sunwoda.com:9002/springws/websocket?token="+this.token);
+//    websocket.onopen =this.onOpen;
+//    websocket.onmessage =this.onMessage;
+//    websocket.onerror = this.onError;
+//    websocket.onclose = this.onClose;
   },
   methods:{
     showsee:function (event) {
@@ -138,6 +145,30 @@ export default {
       });
     }
 
+  },
+  onOpen: function(openEvt) {
+    console.log(openEvt);
+  },
+
+  onMessage:function (evt) {
+    alert(evt.data);
+
+  },
+  onError:function()  {},
+  onClose:function() {},
+
+  doSendfunction (status,uNo,msg) {
+    if (websocket.readyState == (websocket.OPEN==undefined?1:websocket.OPEN)) {
+      var socketMsg={
+        status:status,
+        userNo:uNo,//要发送消息的用户的userId,ALL为发送给所有人
+        msg:msg
+      }
+      websocket.send(JSON.stringify(socketMsg));//调用后台handleTextMessage方法
+      alert("发送成功!");
+    } else {
+      alert("连接失败!");
+    }
   },
 
 }

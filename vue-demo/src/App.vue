@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <router-view class="abb" :myMessage="myMessage" :peopleList="peopleList" :vipList="vipList" :lType="lType" :token="token" :userNo="userNo"></router-view>
+    <router-view class="abb" :addFmes="addFmes" :websocket="websocket" :myMessage="myMessage" :peopleList="peopleList" :vipList="vipList" :lType="lType" :token="token" :userNo="userNo"></router-view>
     <div id="bottom">
         <div class="item"><router-link to="/index">主页</router-link></div>
         <div class="item"><router-link to="/love">情感天地</router-link></div>
@@ -11,9 +11,8 @@
 </template>
 <script>
  import $ from 'jquery'
-  //var token = "00098635bd29551e6151a76edd395cec";
- var token = "7d37573b9e465f676ecc233c4b72cbeb";
-
+var token = "00098635bd29551e6151a76edd395cec";
+//var token = "7d37573b9e465f676ecc233c4b72cbeb";
  (function ($) {
     $.getUrlParam = function (name) {
       var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
@@ -34,7 +33,9 @@ export default {
       myMessage:{},
       peopleList:{},
       vipList:{},
-      lType:["女神系列","活泼可爱","工作达人","温文尔雅","心灵手巧"]
+      lType:["女神系列","活泼可爱","工作达人","温文尔雅","心灵手巧"],
+      websocket:null,
+      addFmes:[]
     }
   },
   mounted: function(){
@@ -52,12 +53,11 @@ export default {
           vm.getMemessage(response.data.message);  //获取个人属性
           vm.getList(response.data.message);//获取主页信息
           vm.getvipList(response.data.message,"推荐");
-          var websocket = null;
-          websocket = new WebSocket("ws://appinter.sunwoda.com:9002/springws/websocket?token="+token);
-          websocket.onopen =this.onOpen;
-          websocket.onmessage =this.onMessage;
-          websocket.onerror = this.onError;
-          websocket.onclose = this.onClose;
+          vm.websocket = new WebSocket("ws://appinter.sunwoda.com:9002/springws/websocket?token="+token);
+          vm.websocket.onopen =this.onOpen;
+          vm.websocket.onmessage =this.onMessage;
+          vm.websocket.onerror = this.onError;
+          vm.websocket.onclose = this.onClose;
         }else {//未注册
           window.location.href="static/h5/index.html?token="+token;
         }
@@ -70,7 +70,11 @@ export default {
  },
 
     onMessage:function (evt) {
-   alert(evt.data);
+     if(evt.data!="连接成功"){
+        this.addFmes.push(evt.data);
+      }
+
+   console.log("mess"+evt.data);
 
  },
     onError:function()  {},
