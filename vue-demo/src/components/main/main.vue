@@ -98,12 +98,6 @@ export default {
     this.vipListin = this.vipList;
     this.type=this.lType[0];
     console.log(this.vipList);
-    var websocket = null;
-//    $websocket = new WebSocket("ws://appinter.sunwoda.com:9002/springws/websocket?token="+this.token);
-//    websocket.onopen =this.onOpen;
-//    websocket.onmessage =this.onMessage;
-//    websocket.onerror = this.onError;
-//    websocket.onclose = this.onClose;
   },
   methods:{
     showsee:function (event) {

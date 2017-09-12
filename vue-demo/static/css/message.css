@@ -5,7 +5,7 @@
 }
 #messageContent .title{
    display: flex;
-   height: 30px;
+   height: 5%;
    align-items: center;
    border-bottom: solid #eeeeee 1px;
   color: #555;
@@ -25,7 +25,8 @@
 }
 .lt_zong{
   padding: 0 0.17rem 0 0.24rem;
-  /*overflow: hidden;*/
+  height:85%;
+  overflow: scroll;
  background: #e4e8f1;
 }
 .lt_zong>p{
@@ -96,7 +97,7 @@
 }
 .lt_bottom{
   width:6.08rem;
-  height:0.6rem;
+  height:6%;
   position: absolute;
   bottom: 0;
   left: 0;

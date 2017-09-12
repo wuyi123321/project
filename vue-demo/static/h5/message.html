@@ -16,30 +16,24 @@
 <link rel="stylesheet" href="../css/font-awesome.css">
 <body>
 <div id="messageContent">
-    <div class="title">
-       <div>{{name}}</div>
-       <div><i class="icon-user"></i></div>
-    </div>
+  <div class="title">
+    <div>{{name}}</div>
+    <div><i class="icon-user"></i></div>
+  </div>
   <div class="lt_zong">
-    <p class="lt_df">
+    <p class="lt_df lt_df1" v-if="admin">
       <span class="img"><img src="../images/message.png"></span>
       <span class="lt_sjx"></span>
-      <span class="lt_zi">这里好热闹哇哇</span>
+      <span class="lt_zi lt_zi3">欢迎来到缘分天空</span>
     </p>
-    <p class="lt_df lt_df1">
-      <span class="img"><img src="../images/message.png"></span>
-      <span class="lt_sjx"></span>
-      <span class="lt_zi lt_zi3">谁看过了这个电影到底讲的是什么，好看吗？</span>
-    </p>
-
-    </div>
-    <div class="lt_bottom">
-     <form>
-    <input type="text" value="" class="lt_inp"/>
-    <!--<p class="lt_mask"></p>-->
-    <span @click="doSendfunction">提交</span>
-      </form>
-   </div>
+  </div>
+  <div class="lt_bottom">
+    <form>
+      <input type="text" value="" class="lt_inp"/>
+      <!--<p class="lt_mask"></p>-->
+      <span @click="doSendfunction">提交</span>
+    </form>
+  </div>
 </div>
 
 </body>
@@ -58,13 +52,17 @@
   var tolkTo=$.getUrlParam("tolkTo");
   var name=$.getUrlParam("name");
   var token=$.getUrlParam("token");
+  var fPhoto=$.getUrlParam("fPhoto");
+  var photo=$.getUrlParam("photo");
+
   var a= new Vue({
     el: '#messageContent',
     data: function() {
       return {
         tolkTo:tolkTo,
         name:name,
-        websocket:null
+        websocket:null,
+        admin:false
       }
     },
     mounted: function(){
@@ -75,40 +73,34 @@
       this.websocket.onclose = this.onClose;
     },
     methods:{
-      send:function () {
-        console.log("Aaa");
-        if ($('.lt_inp').val()!='') {
-          if ($('.lt_inp').val().length>=16) {
-            var str='' +
-              '<p class="lt_df lt_df1 lt_rig"><span class="img2">' +
-              '<img src="../images/photo.png" width="40" height="42"></span>' +
-              '<span class="lt_sjx lt_sjx1"></span>' +
-              '<span class="lt_zi lt_zi3 lt_zi1">'+$('.lt_inp').val()+'</span></p>';
-            // $('.lt_zong').children().eq(0).remove();
-            $('.lt_zong').append(str);
-            $('.lt_inp').val('');
-          } else{
-            var str='<p class="lt_df  lt_rig">' +
-              '<span class="img2"><img src="../images/photo.png" width="40" height="42">' +
-              '</span><span class="lt_sjx lt_sjx1">' +
-              '</span><span class="lt_zi  lt_zi1">'+$('.lt_inp').val()+'</span></p>';
-            // $('.lt_zong').children().eq(0).remove();
-            $('.lt_zong').append(str);
-            $('.lt_inp').val('');
-          }
-        }
-      },
       onOpen: function(openEvt) {
         console.log(openEvt);
       },
-
       onMessage:function (evt) {
-//        if(evt.data!="连接成功"){
-//          this.addFmes.push(evt.data);
-//        }
-        console.log("mess"+evt);
+        if(evt.data!="连接成功"){
+          var mes=JSON.parse(evt.data);
+          if(mes["userNo"]==tolkTo && mes["status"]==1){
+            var a = mes["msg"];
+            if(a.length>16){
+              var str= "<p class='lt_df lt_df1'>" +
+                "<span class='img'><img src='http://appinter.sunwoda.com"+fPhoto+"'></span>" +
+                "<span class='lt_sjx'></span>" +
+                "<span class='lt_zi  lt_zi3'>"+a[i]+"</span>" +
+                "</p>"
+            }else {
+              var str = "<p class='lt_df'>" +
+                "<span class='img'><img src='http://appinter.sunwoda.com"+fPhoto+"'></span>" +
+                "<span class='lt_sjx'></span>" +
+                "<span class='lt_zi'>"+a+"</span>" +
+                "</p>"
+            }
+            $('.lt_zong').append(str);
+          }
 
 
+
+        }
+        console.log(evt.data);
       },
       onError:function()  {},
       onClose:function() {},
@@ -117,7 +109,7 @@
         if($('.lt_inp').val()!=''){
           if (vm.websocket.readyState == (vm.websocket.OPEN==undefined?1:vm.websocket.OPEN)) {
             var socketMsg={
-              status:"0",
+              status:"1",
               userNo:this.tolkTo,//要发送消息的用户的userId,ALL为发送给所有人
               msg:$('.lt_inp').val()
             }
@@ -125,15 +117,15 @@
             if ($('.lt_inp').val().length>=16) {
               var str='' +
                 '<p class="lt_df lt_df1 lt_rig"><span class="img2">' +
-                '<img src="../images/photo.png" width="40" height="42"></span>' +
+                '<img src="http://appinter.sunwoda.com'+photo+' width="40" height="42"></span>' +
                 '<span class="lt_sjx lt_sjx1"></span>' +
                 '<span class="lt_zi lt_zi3 lt_zi1">'+$('.lt_inp').val()+'</span></p>';
               // $('.lt_zong').children().eq(0).remove();
               $('.lt_zong').append(str);
               $('.lt_inp').val('');
-                } else{
-               var str='<p class="lt_df  lt_rig">' +
-                 '<span class="img2"><img src="../images/photo.png" width="40" height="42">' +
+            } else{
+              var str='<p class="lt_df  lt_rig">' +
+                '<span class="img2"><img src="http://appinter.sunwoda.com'+photo+'width="40" height="42">' +
                 '</span><span class="lt_sjx lt_sjx1">' +
                 '</span><span class="lt_zi  lt_zi1">'+$('.lt_inp').val()+'</span></p>';
               // $('.lt_zong').children().eq(0).remove();

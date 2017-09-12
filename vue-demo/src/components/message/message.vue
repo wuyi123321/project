@@ -9,7 +9,7 @@
                <div class="time">下午5:12</div>
              </div>
            </li>
-           <li v-for="item in friList" v-bind:id="item.userNo" v-bind:name="item.userName" >
+           <li v-for="item in friList" v-bind:id="item.userNo" v-bind:name="item.userName" v-bind:fPhoto="item.headPhoto" v-bind:photo="myMessage.photo">
              <div class="img"><img v-bind:src="'http://appinter.sunwoda.com'+item.headPhoto" width="39" height="39"/></div>
              <div class="right">
                <div class="r_top">{{item.userName}}</div>
@@ -44,6 +44,7 @@ export default {
     addFmes:Array,
     userNo:String,
     token:String,
+    myMessage:Object
   },
   data () {
     return {
@@ -71,8 +72,10 @@ export default {
     sendmessage:function (event) {
       var id=event.target.parentNode.parentNode.getAttribute("id");
       var name=event.target.parentNode.parentNode.getAttribute("name");
+      var fPhoto=event.target.parentNode.parentNode.getAttribute("fPhoto");
+      var photo=event.target.parentNode.parentNode.getAttribute("photo");
       console.log(event.target.parentNode.parentNode.getAttribute("id"))
-      window.location.href="../../static/h5/message.html?tolkTo="+id+"&name="+name+"&token="+this.token;
+      window.location.href="../../static/h5/message.html?tolkTo="+id+"&name="+name+"&token="+this.token +"&fPhoto="+fPhoto+"&photo="+photo;
     },
     agree:function (event) {
       var vm = this;

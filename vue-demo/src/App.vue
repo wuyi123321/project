@@ -12,7 +12,9 @@
 <script>
  import $ from 'jquery'
 //var token = "00098635bd29551e6151a76edd395cec";
-var token = "7d37573b9e465f676ecc233c4b72cbeb";
+var token="d8786b5210b25d6232ccf7b1b95ad2bd";
+// var token="427ac2cd8217032e75e00e57d42e1fc6";
+//var token = "7d37573b9e465f676ecc233c4b72cbeb";
  (function ($) {
     $.getUrlParam = function (name) {
       var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
@@ -36,6 +38,7 @@ export default {
       lType:["女神系列","活泼可爱","工作达人","温文尔雅","心灵手巧"],
       websocket:null,
       addFmes:[],
+      fMess:[],
       mesNum:5
     }
   },
@@ -71,13 +74,16 @@ export default {
  },
 
     onMessage:function (evt) {
-     if(evt.data!="连接成功"){
+
+     if(evt.data != "连接成功" && JSON.parse(evt.data)["status"]==2){
         this.addFmes.push(evt.data);
       }
-
-   console.log("mess"+evt.data);
+      if(evt.data != "连接成功" && JSON.parse(evt.data)["status"]==1){
+        this.fMess.push(evt.data);
+      }
+      console.log(evt.data);
       console.log(this.addFmes);
-
+      console.log(this.fMess);
  },
     onError:function()  {},
     onClose:function() {},
@@ -115,7 +121,7 @@ export default {
     getList(userNO){
       let vm = this;
       //var href="http://172.16.98.74:8080/swdAPP/common/LoveTheSkyUser/LoveTheSkyUserIndex.json?userNo=170711129&pagesize=10&page=1"
-      var href="http://appinter.sunwoda.com/common/LoveTheSkyUser/LoveTheSkyUserIndex.json"
+      var href="http://appinter.sunwoda.com/common/LoveTheSkyUser/LoveTheSkyUserIndex.json";
       vm.$http.get(href+"?token="+token+"&userNo="+userNO+"&pageSize=6&page=1"
        ).then((response) => {
         vm.peopleList=response.data.dataInfo;
@@ -126,7 +132,7 @@ export default {
     },
     getvipList(userNO,iTtype){
       let vm = this;
-      var href="http://appinter.sunwoda.com/common/LoveTheSkyUser/findUserBytypes.json"
+      var href="http://appinter.sunwoda.com/common/LoveTheSkyUser/findUserBytypes.json";
       vm.$http.get(href+"?token="+token+"&userNo="+userNO+"&pageSize=3&page=1&lTypes="+iTtype
       ).then((response) => {
         vm.vipList=response.data.dataInfo;
