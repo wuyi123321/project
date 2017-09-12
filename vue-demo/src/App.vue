@@ -4,15 +4,15 @@
     <div id="bottom">
         <div class="item"><router-link to="/index">主页</router-link></div>
         <div class="item"><router-link to="/love">情感天地</router-link></div>
-        <div class="item"><router-link to="/message">消息</router-link></div>
+      <div class="item"><router-link to="/message"><el-badge v-model="mesNum" >消息</el-badge></router-link></div>
         <div class="item"><router-link to="/me">我</router-link></div>
     </div>
   </div>
 </template>
 <script>
  import $ from 'jquery'
-var token = "00098635bd29551e6151a76edd395cec";
-//var token = "7d37573b9e465f676ecc233c4b72cbeb";
+//var token = "00098635bd29551e6151a76edd395cec";
+var token = "7d37573b9e465f676ecc233c4b72cbeb";
  (function ($) {
     $.getUrlParam = function (name) {
       var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
@@ -35,7 +35,8 @@ export default {
       vipList:{},
       lType:["女神系列","活泼可爱","工作达人","温文尔雅","心灵手巧"],
       websocket:null,
-      addFmes:[]
+      addFmes:[],
+      mesNum:5
     }
   },
   mounted: function(){
@@ -75,6 +76,7 @@ export default {
       }
 
    console.log("mess"+evt.data);
+      console.log(this.addFmes);
 
  },
     onError:function()  {},

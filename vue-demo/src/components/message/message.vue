@@ -9,11 +9,11 @@
                <div class="time">下午5:12</div>
              </div>
            </li>
-           <li v-for="item in 4" v-bind:id="item">
-             <div class="img"><img src="../../assets/photo.png" width="39" height="39"/></div>
+           <li v-for="item in friList" v-bind:id="item.userNo" v-bind:name="item.userName" >
+             <div class="img"><img v-bind:src="'http://appinter.sunwoda.com'+item.headPhoto" width="39" height="39"/></div>
              <div class="right">
-               <div class="r_top">张三{{item}}</div>
-               <div  class="r_bottom">晚上谈谈人生</div>
+               <div class="r_top">{{item.userName}}</div>
+               <div  class="r_bottom"><span v-if="item.online" style="color: #11b95c">在线</span><span v-if="item.online==false"style="color: #aaa">离线</span></div>
                <div class="time">下午2:12</div>
              </div>
            </li>
@@ -24,15 +24,15 @@
           title="验证消息"
           width="220"
           trigger="click">
-           <div v-for="i in adi" class="add_item">
-                 {{i.friendNo}}
-                 {{i.msg}}
+           <div v-for="i in addFmes" class="add_item">
+                 {{JSON.parse(i).userNo}}
+                 {{JSON.parse(i).msg}}
              <div class="tof">
-               <span :id="i.friendNo" @click="agree">同意添加</span> <span @click="disagree">不同意</span>
+               <span :id="JSON.parse(i).userNo" @click="agree">同意添加</span> <span @click="disagree">不同意</span>
              </div>
            </div>
         </el-popover>
-         <div id="addMes" v-popover:popover1>好友请求
+        <div id="addMes" v-popover:popover1><el-badge is-dot :hidden="badgehid">好友请求</el-badge>
          </div>
       </div>
 </template>
@@ -47,31 +47,32 @@ export default {
   },
   data () {
     return {
-      msg: 'Welcome to Your Vue.js App',
-      adi:[
-        {"friendNo":"170711129","status":2,"userNo":"141225004","msg":"请求加为好友"},
-        {"friendNo":"170711125","status":2,"userNo":"141225004","msg":"请求加为好友"}
-        ]
-
+      badgehid: true,
+      friList:{}
     }
   },
   mounted: function () {
     console.log("Aa")
-    console.log("sada");
+    console.log(this.addFmes);
+    if(this.addFmes.length>0){
+      this.badgehid=false;
+    }
     var vm = this;
     var href="http://appinter.sunwoda.com/common/lsfriend/friendInfo.json";
-    vm.$http.get(href+"?token="+this.token
+    vm.$http.get(href+"?token="+this.token+"&userNo="+this.userNo
     ).then((response) => {
       console.log(response);
+      vm.friList=response.data.dataInfo.listData;
     }, (response) => {
       console.log('error');
     });
   },
-  methods: {
+  methods:{
     sendmessage:function (event) {
-      var a=event.target.parentNode.parentNode.getAttribute("id");
+      var id=event.target.parentNode.parentNode.getAttribute("id");
+      var name=event.target.parentNode.parentNode.getAttribute("name");
       console.log(event.target.parentNode.parentNode.getAttribute("id"))
-      window.location.href="../../static/h5/message.html?tolkTo="+a;
+      window.location.href="../../static/h5/message.html?tolkTo="+id+"&name="+name+"&token="+this.token;
     },
     agree:function (event) {
       var vm = this;
@@ -80,14 +81,13 @@ export default {
       var href="http://appinter.sunwoda.com/common/lsfriend/addFriend.json";
       vm.$http.get(href+"?token="+this.token+"&userNo="+this.userNo+"&friendNo="+perNo+"&status=0"
       ).then((response) => {
-        console.log();
+        console.log(response);
         if(response.data.message=="操作成功"){
          vm.$message('添加成功');
           event.target.parentNode.parentNode.innerHTML=null;
         }else {
           vm.$message(response.data.message);
         }
-
       }, (response) => {
         console.log('error');
       });
@@ -95,17 +95,6 @@ export default {
     disagree:function (event) {
       event.target.parentNode.parentNode.innerHTML=null;
     },
-    getFriList:function () {
-      console.log("sada");
-      var vm = this;
-      var href="http://appinter.sunwoda.com/common/lsfriend/friendInfo.json";
-      vm.$http.get(href+"?token="+this.token
-      ).then((response) => {
-        console.log(response);
-      }, (response) => {
-        console.log('error');
-      });
-    }
   }
 }
 </script>
