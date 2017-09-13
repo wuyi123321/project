@@ -4,31 +4,42 @@
            <li id="0">
              <div class="img"><img src="../../assets/message.png" width="39" height="39"/></div>
              <div class="right">
-               <div class="r_top">系统消息</div>
+               <div class="r_top">管理员</div>
                <div class="r_bottom">亲爱的用户：欢迎来到缘分的天空,在这里求缘分，交好友</div>
                <div class="time">下午5:12</div>
              </div>
            </li>
            <li v-for="item in friList" v-bind:id="item.userNo" v-bind:name="item.userName" v-bind:fPhoto="item.headPhoto" v-bind:photo="myMessage.photo">
+             <router-link :to="{path: '/info', query: {
+                      fNo:item.userNo,
+                      fName:item.userName,
+                      fPhoto:item.headPhoto
+             }}">
              <div class="img"><img v-bind:src="'http://appinter.sunwoda.com'+item.headPhoto" width="39" height="39"/></div>
              <div class="right">
                <div class="r_top">{{item.userName}}</div>
-               <div  class="r_bottom"><span v-if="item.online" style="color: #11b95c">在线</span><span v-if="item.online==false"style="color: #aaa">离线</span></div>
+               <div  class="r_bottom">
+                 <span v-if="item.online" style="color: #11b95c">在线</span>
+                 <span v-if="item.online==false"style="color: #aaa">离线</span>
+                 <el-badge :value="getPersonMnum(item.userNo)" ></el-badge></div>
                <div class="time">下午2:12</div>
              </div>
+             </router-link>
            </li>
          </ul>
+
+        <router-view :websocket="websocket" :myMessage="myMessage"></router-view>
         <el-popover
           ref="popover1"
           placement="left"
           title="验证消息"
           width="220"
           trigger="click">
-           <div v-for="i in addFmes" class="add_item">
+           <div v-for="(i,index) in addFmesC" class="add_item">
                  {{JSON.parse(i).userNo}}
                  {{JSON.parse(i).msg}}
              <div class="tof">
-               <span :id="JSON.parse(i).userNo" @click="agree">同意添加</span> <span @click="disagree">不同意</span>
+               <span :id="JSON.parse(i).userNo" :index="index" @click="agree">同意添加</span> <span @click="disagree" :index="index">不同意</span>
              </div>
            </div>
         </el-popover>
@@ -44,17 +55,29 @@ export default {
     addFmes:Array,
     userNo:String,
     token:String,
-    myMessage:Object
+    myMessage:Object,
+    websocket:WebSocket,
+    fMess:Array
   },
   data () {
     return {
       badgehid: true,
-      friList:{}
+      friList:{},
+      addFmesC:[],
+      fMessC:[],
+      socket:null
     }
   },
-  mounted: function () {
-    console.log("Aa")
+  created: function () {
+    this.socket=this.websocket;
+    console.log("AAAA");
+    this.socket.onmessage =this.onMessage;
+    this.socket.onopen =this.onOpen;
+  },
+    mounted: function () {
     console.log(this.addFmes);
+    this.addFmesC=this.addFmes;
+    this.fMessC=this.fMess;
     if(this.addFmes.length>0){
       this.badgehid=false;
     }
@@ -69,17 +92,28 @@ export default {
     });
   },
   methods:{
+    getPersonMnum:function(uNo) {
+      var num=0;
+      for (var i=0;i<this.fMessC.length;i++){
+        console.log(JSON.parse(this.fMessC[i])["userNo"]);
+        if(JSON.parse(this.fMessC[i])["userNo"]==uNo){
+          num++
+        }
+      }
+      return num
+    },
     sendmessage:function (event) {
-      var id=event.target.parentNode.parentNode.getAttribute("id");
-      var name=event.target.parentNode.parentNode.getAttribute("name");
-      var fPhoto=event.target.parentNode.parentNode.getAttribute("fPhoto");
-      var photo=event.target.parentNode.parentNode.getAttribute("photo");
-      console.log(event.target.parentNode.parentNode.getAttribute("id"))
-      window.location.href="../../static/h5/message.html?tolkTo="+id+"&name="+name+"&token="+this.token +"&fPhoto="+fPhoto+"&photo="+photo;
+//      var id=event.target.parentNode.parentNode.getAttribute("id");
+//      var name=event.target.parentNode.parentNode.getAttribute("name");
+//      var fPhoto=event.target.parentNode.parentNode.getAttribute("fPhoto");
+//      var photo=event.target.parentNode.parentNode.getAttribute("photo");
+//      console.log(event.target.parentNode.parentNode.getAttribute("id"))
+//      window.location.href="../../static/h5/message.html?tolkTo="+id+"&name="+name+"&token="+this.token +"&fPhoto="+fPhoto+"&photo="+photo;
     },
     agree:function (event) {
       var vm = this;
       var perNo=event.target.getAttribute("id");
+      var index=event.target.getAttribute("index");
       console.log(perNo);
       var href="http://appinter.sunwoda.com/common/lsfriend/addFriend.json";
       vm.$http.get(href+"?token="+this.token+"&userNo="+this.userNo+"&friendNo="+perNo+"&status=0"
@@ -87,17 +121,39 @@ export default {
         console.log(response);
         if(response.data.message=="操作成功"){
          vm.$message('添加成功');
+         this.addFmesC.splice(index,index);
           event.target.parentNode.parentNode.innerHTML=null;
         }else {
           vm.$message(response.data.message);
+          this.addFmesC.splice(index,index+1);
         }
       }, (response) => {
         console.log('error');
       });
     },
     disagree:function (event) {
-      event.target.parentNode.parentNode.innerHTML=null;
+      this.addFmesC.splice(index,index+1);
     },
+    onOpen: function(openEvt) {
+      console.log("bbb");
+      console.log(openEvt);
+    },
+    onMessage:function (evt) {
+      console.log("ccc");
+      if(evt.data != "连接成功" && JSON.parse(evt.data)["status"]==2){
+        this.addFmesC.push(evt.data);
+      }
+      if(evt.data != "连接成功" && JSON.parse(evt.data)["status"]==1){
+        this.fMessC.push(evt.data);
+      }
+      console.log(evt.data);
+      console.log(this.addFmesC);
+      console.log(this.fMessC);
+    },
+
+  },
+  destroyed: function () {
+    console.log("关闭1");
   }
 }
 </script>

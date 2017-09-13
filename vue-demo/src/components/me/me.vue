@@ -10,9 +10,9 @@
       <div class="basemessage">
         <div class="c_title">基本信息</div>
         <ul @click="mesShowBase">
-          <li>
-            <i class="icon-tablet"><span>{{myMessage.tel}}</span></i>
-          </li>
+          <!--<li>-->
+            <!--<i class="icon-tablet"><span>{{myMessage.tel}}</span></i>-->
+          <!--</li>-->
           <li>
             <i class="icon-user"><span>{{myMessage.gender==0?"女":"男"}}</span><span>{{myMessage.education}}</span><span>{{myMessage.height}}cm</span><span>{{myMessage.area}}</span></i>
           </li>
@@ -250,6 +250,7 @@
         return fmt;
       }
     },
+
   }
 </script>
 

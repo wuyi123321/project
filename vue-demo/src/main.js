@@ -7,7 +7,6 @@ import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-default/index.css'
 import jquery from '../static/comjs/jquery'
 import axios from 'axios'
-Vue.prototype.$websocket=null;
 Vue.prototype.$http = axios;
 // Vue.config.productionTip = false;
 Vue.use(ElementUI);

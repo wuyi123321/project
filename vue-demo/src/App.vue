@@ -1,18 +1,18 @@
 <template>
   <div id="app">
-    <router-view class="abb" :addFmes="addFmes" :websocket="websocket" :myMessage="myMessage" :peopleList="peopleList" :vipList="vipList" :lType="lType" :token="token" :userNo="userNo"></router-view>
+    <router-view class="abb"  :fMess="fMess" :addFmes="addFmes" :websocket="websocket" :myMessage="myMessage" :peopleList="peopleList" :vipList="vipList" :lType="lType" :token="token" :userNo="userNo"></router-view>
     <div id="bottom">
         <div class="item"><router-link to="/index">主页</router-link></div>
         <div class="item"><router-link to="/love">情感天地</router-link></div>
-      <div class="item"><router-link to="/message"><el-badge v-model="mesNum" >消息</el-badge></router-link></div>
+        <div class="item"><router-link to="/message"><el-badge v-model="mesNum" >消息</el-badge></router-link></div>
         <div class="item"><router-link to="/me">我</router-link></div>
     </div>
   </div>
 </template>
 <script>
  import $ from 'jquery'
-//var token = "00098635bd29551e6151a76edd395cec";
-var token="d8786b5210b25d6232ccf7b1b95ad2bd";
+var token = "00098635bd29551e6151a76edd395cec";
+//var token="d8786b5210b25d6232ccf7b1b95ad2bd";
 // var token="427ac2cd8217032e75e00e57d42e1fc6";
 //var token = "7d37573b9e465f676ecc233c4b72cbeb";
  (function ($) {
@@ -84,6 +84,7 @@ export default {
       console.log(evt.data);
       console.log(this.addFmes);
       console.log(this.fMess);
+      this.mesNum=this.addFmes.length+this.fMess.length;
  },
     onError:function()  {},
     onClose:function() {},
@@ -130,6 +131,7 @@ export default {
         console.log('error');
       });
     },
+    //获取推荐人名单
     getvipList(userNO,iTtype){
       let vm = this;
       var href="http://appinter.sunwoda.com/common/LoveTheSkyUser/findUserBytypes.json";

@@ -4,7 +4,7 @@ import Main from '@/components/main/main'
 import Love from '@/components/love/love'
 import Me from '@/components/me/me'
 import Message from '@/components/message/message'
-import ceshi from '@/components/ceshi'
+import ceshi from '@/components/message/chat'
 Vue.use(Router);
 
 export default new Router({
@@ -19,11 +19,18 @@ export default new Router({
     },
     {
       path: '/message',
-      component: Message
+      component: Message,
+      children:[
+        { path: '/info',
+          component: ceshi }
+      ]
     },
     {
       path: '/me',
       component: Me
+    },{
+      path: '*', redirect: '/me'
     }
+
   ]
 })

@@ -12,9 +12,9 @@
       <div class="basemessage">
         <div class="c_title">基本信息</div>
         <ul @click="mesShowBase">
-          <li>
-            <i class="icon-tablet"><span>{{myMessage.tel}}</span></i>
-          </li>
+          <!--<li>-->
+            <!--<i class="icon-tablet"><span>{{myMessage.tel}}</span></i>-->
+          <!--</li>-->
           <li>
             <i class="icon-user"><span>{{myMessage.gender==0?"女":"男"}}</span><span>{{myMessage.education}}</span><span>{{myMessage.height}}cm</span><span>{{myMessage.area}}</span></i>
           </li>
@@ -251,7 +251,6 @@
 
       doSendfunction (status,uNo,msg) {
         if (this.websocket.readyState == (this.websocket.OPEN==undefined?1:this.websocket.OPEN)) {
-
           var socketMsg={
             status:status,
             userNo:uNo,//要发送消息的用户的userId,ALL为发送给所有人
