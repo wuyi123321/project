@@ -16,11 +16,8 @@
               <ul>
                 <li v-for="item in peopleListin.listData" >
                   <div class="img_item">
-                    <div class="img_show" @click="showsee">
-                      <!--http://appinter.sunwoda.com/vehicle/upload/41968146088513111.jpg-->
-                      <!--<img src="http://appinter.sunwoda.com/img/loveTheSkyUser/user/1504322471225.png">-->
-                      <img  v-bind:src="'http://appinter.sunwoda.com'+item.photo"/>
-                      <div class="see"><span>加关注</span> <span class="leave_message" >留言</span></div>
+                    <div class="img_show" @click="showPeople">
+                      <img  v-bind:src="'http://appinter.sunwoda.com'+item.photo" v-bind:id="item.userNo"/>
                     </div>
                     <div class="img_bottom">
                       <span>{{item.area}}</span>
@@ -37,9 +34,8 @@
          <ul>
            <li v-for="item in vipListin.listData" class="list_item">
              <div class="img_item">
-               <div class="img_show" @click="showsee">
-                 <img v-bind:src="'http://appinter.sunwoda.com'+item.photo"/>
-                 <div class="see"><span :id="item.userNo">加好友</span> <span class="leave_message" >留言</span></div>
+               <div class="img_show" @click="showPeople">
+                 <img v-bind:src="'http://appinter.sunwoda.com'+item.photo" v-bind:id="item.userNo"/>
                </div>
                <div class="person_message">
                 <table>
@@ -70,16 +66,18 @@
          </ul>
        </div>
      </div>
+     <person id="me" :myMessage="peopleMessage" :websocket="websocket"  ></person>
    </div>
 </template>
 <script>
-
+  import person from "@/components/comm/person.vue";
 export default {
   name: 'hello',
   props:{
     peopleList:Object,
     vipList:Object,
     lType:Array,
+    websocket:WebSocket,
     token:String,
     userNo:String
   },
@@ -90,7 +88,8 @@ export default {
       type:"",
       vipListin:{},
       flag:1,
-      flag1:1
+      flag1:1,
+      peopleMessage:{}
     }
   },
   created: function(){
@@ -100,10 +99,19 @@ export default {
     console.log(this.vipList);
   },
   methods:{
-    showsee:function (event) {
-      console.log(event.target.parentNode.lastChild);
-      console.log($(".see"));
-      event.target.parentNode.lastChild.setAttribute("style","display:block");
+    getPeopleMemessage(userNO){
+      let vm = this;
+      vm.$http.get('http://appinter.sunwoda.com/common/LoveTheSkyUser/findLoveTheSkyUser.json?userNo='+userNO+'&token='+this.token).then((response) => {
+        vm.peopleMessage=response.data.dataInfo.listData[0];
+      }, (response) => {
+        console.log('error');
+      });
+    },
+    showPeople:function (event) {//人物展示页面显示
+      var perNo=event.target.getAttribute("id");
+      console.log(perNo);
+      this.getPeopleMemessage(perNo);
+      $("#me").animate({width:"100vw"},"fast")
     },
     show_type:function (event) {
         this.type=event.target.innerHTML;
@@ -164,25 +172,18 @@ export default {
       alert("连接失败!");
     }
   },
-
+  components: {
+    person,
+  }
 }
 </script>
 <style>
-/*.el-carousel__item h3 {*/
-    /*color: #475669;*/
-    /*font-size: 14px;*/
-    /*opacity: 0.75;*/
-    /*line-height: 150px;*/
-    /*margin: 0;*/
-/*}*/
-
-/*.el-carousel__item:nth-child(2n) {*/
-    /*background-color: #99a9bf;*/
-/*}*/
-
-/*.el-carousel__item:nth-child(2n+1) {*/
-    /*background-color: #d3dce6;*/
-/*}*/
+  .block #me{
+    width: 0;
+    position: fixed;;
+    top:0;
+    background: #fff;
+  }
 .block{
   width: 100%;
   height: 100%;

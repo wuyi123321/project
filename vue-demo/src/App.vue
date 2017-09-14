@@ -1,10 +1,10 @@
 <template>
   <div id="app">
-    <router-view class="abb"  :fMess="fMess" :addFmes="addFmes" :websocket="websocket" :myMessage="myMessage" :peopleList="peopleList" :vipList="vipList" :lType="lType" :token="token" :userNo="userNo"></router-view>
+    <router-view class="abb"  :mesend="onMessage" :fMess="fMess" :addFmes="addFmes" :websocket="websocket" :myMessage="myMessage" :peopleList="peopleList" :vipList="vipList" :lType="lType" :token="token" :userNo="userNo"></router-view>
     <div id="bottom">
         <div class="item"><router-link to="/index">主页</router-link></div>
         <div class="item"><router-link to="/love">情感天地</router-link></div>
-        <div class="item"><router-link to="/message"><el-badge v-model="mesNum" >消息</el-badge></router-link></div>
+        <div class="item" @click="clearMess"><router-link to="/message"><el-badge v-model="mesNum" >消息</el-badge></router-link></div>
         <div class="item"><router-link to="/me">我</router-link></div>
     </div>
   </div>
@@ -39,7 +39,7 @@ export default {
       websocket:null,
       addFmes:[],
       fMess:[],
-      mesNum:5
+      mesNum:0
     }
   },
   mounted: function(){
@@ -72,19 +72,18 @@ export default {
     onOpen: function(openEvt) {
    console.log(openEvt);
  },
-
     onMessage:function (evt) {
-
      if(evt.data != "连接成功" && JSON.parse(evt.data)["status"]==2){
         this.addFmes.push(evt.data);
+        this.mesNum++
       }
       if(evt.data != "连接成功" && JSON.parse(evt.data)["status"]==1){
         this.fMess.push(evt.data);
+        this.mesNum++
       }
       console.log(evt.data);
       console.log(this.addFmes);
       console.log(this.fMess);
-      this.mesNum=this.addFmes.length+this.fMess.length;
  },
     onError:function()  {},
     onClose:function() {},
@@ -142,7 +141,11 @@ export default {
       }, (response) => {
         console.log('error');
       });
-    }
+    },
+    clearMess(){
+      this.mesNum=0;
+    },
+
   }
 
 }

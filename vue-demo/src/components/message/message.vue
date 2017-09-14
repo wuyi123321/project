@@ -1,15 +1,21 @@
 <template>
       <div id="message">
-         <ul @click="sendmessage">
+         <ul >
            <li id="0">
+             <router-link :to="{path: '/info', query: {
+                      fNo:'123',
+                      fName:'管理员',
+                      fPhoto:'../../assets/message.png'
+             }}">
              <div class="img"><img src="../../assets/message.png" width="39" height="39"/></div>
              <div class="right">
                <div class="r_top">管理员</div>
                <div class="r_bottom">亲爱的用户：欢迎来到缘分的天空,在这里求缘分，交好友</div>
                <div class="time">下午5:12</div>
              </div>
+             </router-link>
            </li>
-           <li v-for="item in friList" v-bind:id="item.userNo" v-bind:name="item.userName" v-bind:fPhoto="item.headPhoto" v-bind:photo="myMessage.photo">
+           <li v-for="item in friList" v-bind:id="item.userNo" v-bind:name="item.userName" v-bind:fPhoto="item.headPhoto" v-bind:photo="myMessage.photo" >
              <router-link :to="{path: '/info', query: {
                       fNo:item.userNo,
                       fName:item.userName,
@@ -27,8 +33,7 @@
              </router-link>
            </li>
          </ul>
-
-        <router-view :websocket="websocket" :myMessage="myMessage"></router-view>
+        <router-view :addFmesC="addFmesC" :websocket="websocket" :myMessage="myMessage" :mes="onMessage" :personMess="fMessC"></router-view>
         <el-popover
           ref="popover1"
           placement="left"
@@ -49,15 +54,16 @@
 </template>
 
 <script>
+  var getNum=[]
 export default {
-  name: 'hello',
   props:{
     addFmes:Array,
     userNo:String,
     token:String,
     myMessage:Object,
     websocket:WebSocket,
-    fMess:Array
+    fMess:Array,
+    mesend:Function,
   },
   data () {
     return {
@@ -65,19 +71,16 @@ export default {
       friList:{},
       addFmesC:[],
       fMessC:[],
-      socket:null
     }
   },
   created: function () {
-    this.socket=this.websocket;
-    console.log("AAAA");
-    this.socket.onmessage =this.onMessage;
-    this.socket.onopen =this.onOpen;
+    this.websocket.onmessage =this.onMessage;
+    this.websocket.onopen =this.onOpen;
   },
     mounted: function () {
-    console.log(this.addFmes);
     this.addFmesC=this.addFmes;
     this.fMessC=this.fMess;
+
     if(this.addFmes.length>0){
       this.badgehid=false;
     }
@@ -92,23 +95,16 @@ export default {
     });
   },
   methods:{
+    //获取不同人的消息数量
     getPersonMnum:function(uNo) {
+     getNum = new Array(this.fMessC);
       var num=0;
-      for (var i=0;i<this.fMessC.length;i++){
-        console.log(JSON.parse(this.fMessC[i])["userNo"]);
-        if(JSON.parse(this.fMessC[i])["userNo"]==uNo){
+      for (var i=0;i<getNum[0].length;i++){
+      if(JSON.parse(getNum[0][i]).userNo==uNo){
           num++
-        }
+       }
       }
       return num
-    },
-    sendmessage:function (event) {
-//      var id=event.target.parentNode.parentNode.getAttribute("id");
-//      var name=event.target.parentNode.parentNode.getAttribute("name");
-//      var fPhoto=event.target.parentNode.parentNode.getAttribute("fPhoto");
-//      var photo=event.target.parentNode.parentNode.getAttribute("photo");
-//      console.log(event.target.parentNode.parentNode.getAttribute("id"))
-//      window.location.href="../../static/h5/message.html?tolkTo="+id+"&name="+name+"&token="+this.token +"&fPhoto="+fPhoto+"&photo="+photo;
     },
     agree:function (event) {
       var vm = this;
@@ -126,33 +122,45 @@ export default {
         }else {
           vm.$message(response.data.message);
           this.addFmesC.splice(index,index+1);
+          if(this.addFmes.length==0){
+            this.badgehid=true;
+          }
         }
       }, (response) => {
         console.log('error');
       });
     },
     disagree:function (event) {
+      var index=event.target.getAttribute("index");
       this.addFmesC.splice(index,index+1);
+      if(this.addFmes.length==0){
+        this.badgehid=true;
+      }
     },
     onOpen: function(openEvt) {
-      console.log("bbb");
       console.log(openEvt);
     },
     onMessage:function (evt) {
-      console.log("ccc");
       if(evt.data != "连接成功" && JSON.parse(evt.data)["status"]==2){
         this.addFmesC.push(evt.data);
       }
       if(evt.data != "连接成功" && JSON.parse(evt.data)["status"]==1){
+       var id=JSON.parse(evt.data)["userNo"];
         this.fMessC.push(evt.data);
+        getNum.push(evt.data);
+        console.log($("#"+id+" "+".el-badge__content")[0].innerHTML);
+      }
+      if(this.addFmes.length>0){
+        this.badgehid=false;
       }
       console.log(evt.data);
       console.log(this.addFmesC);
       console.log(this.fMessC);
     },
-
   },
+  computed: {},
   destroyed: function () {
+    this.websocket.onmessage =this.mesend;
     console.log("关闭1");
   }
 }
@@ -197,6 +205,9 @@ export default {
   padding-right: 5px;
   height: 25px;
   line-height: 25px;
+}
+#message ul li{
+  z-index: 100;
 }
 #message ul li .img{
   height: 39px;

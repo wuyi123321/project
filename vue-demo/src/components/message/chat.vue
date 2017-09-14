@@ -9,11 +9,15 @@
       <div class="item"></div>
       <i class="icon-user item"></i>
     </div>
-    <div class="lt_zong">
+    <div class="lt_zong" id="centre">
       <p class="lt_df lt_df1" v-if="admin">
         <span class="img"><img src="../../assets/message.png"></span>
         <span class="lt_sjx"></span>
-        <span class="lt_zi lt_zi3">欢迎来到缘分天空</span>
+        <span class="lt_zi lt_zi3">欢迎来到缘分天空,在这里聊天交友<br>
+           情感咨询请发1<br>
+           工作压力请发2<br>
+           想要交友请发3
+        </span>
       </p>
     </div>
     <div class="lt_bottom">
@@ -30,23 +34,33 @@
     props:{
       myMessage:Object,
       websocket:WebSocket,
+      mes:Function,
+      personMess:Array,
+      addFmesC:Array
     },
     data: function() {
       return {
         tolkTo:"",
         name:"",
         fPhoto:'',
-//        websocket:null,
+        mEss:[],
+        aDfmes:[],
         admin:false
       }
     },
     mounted: function(){
+      if(this.$route.query.fNo=='123'){
+        this.admin=true
+      }
 
-      console.log(this.$route.query);
+      console.log(this.personMess);
       this.name=this.$route.query.fName;
       this.tolkTo=this.$route.query.fNo;
       this.fPhoto=this.$route.query.fPhoto;
       this.websocket.onmessage =this.onMessage;
+      this.mEss=this.personMess;
+      this.aDfmes=this.addFmesC;
+      this.getPersonMess();
     },
     methods:{
       closeSend:function () {
@@ -56,11 +70,59 @@
       onOpen: function(openEvt) {
         console.log(openEvt);
       },
+      getPersonMess:function () {
+        var vm=this;
+       for (var i=0;i<this.personMess.length;i++){
+         if(JSON.parse(this.personMess[i])["userNo"]==this.tolkTo && JSON.parse(this.personMess[i])["status"]==1){
+           var a =JSON.parse(this.personMess[i])["msg"];
+           if(a.length>16){
+             var str= "<p class='lt_df lt_df1'>" +
+               "<span class='img'><img src='http://appinter.sunwoda.com"+vm.fPhoto+"'></span>" +
+               "<span class='lt_sjx'></span>" +
+               "<span class='lt_zi  lt_zi3'>"+a+"</span>" +
+               "</p>"
+           }else {
+             var str = "<p class='lt_df'>" +
+               "<span class='img'><img src='http://appinter.sunwoda.com"+vm.fPhoto+"'></span>" +
+               "<span class='lt_sjx'></span>" +
+               "<span class='lt_zi'>"+a+"</span>" +
+               "</p>"
+           }
+           $('.lt_zong').append(str);
+           var div = document.getElementById("centre");
+           div.scrollTop =  div.scrollHeight;
+           }
+           else if(JSON.parse(this.personMess[i])["userNo"]==this.tolkTo && JSON.parse(this.personMess[i])["status"]==100){
+           var a =JSON.parse(this.personMess[i])["msg"];
+           if (a.length>=16) {
+             var str='' +
+               '<p class="lt_df lt_df1 lt_rig"><span class="img2">' +
+               '<img src="http://appinter.sunwoda.com'+vm.myMessage.photo+' width="40" height="42"></span>' +
+               '<span class="lt_sjx lt_sjx1"></span>' +
+               '<span class="lt_zi lt_zi3 lt_zi1">'+a+'</span></p>';
+
+           } else{
+             var str='<p class="lt_df  lt_rig">' +
+               '<span class="img2"><img src="http://appinter.sunwoda.com'+vm.myMessage.photo+'width="40" height="42">' +
+               '</span><span class="lt_sjx lt_sjx1">' +
+               '</span><span class="lt_zi  lt_zi1">'+a+'</span></p>';
+           }
+           $('.lt_zong').append(str);
+           $('.lt_inp').val('');
+           var div = document.getElementById("centre");
+           div.scrollTop =  div.scrollHeight;
+         }
+          }
+    },
       onMessage:function (evt) {
         var vm = this;
-        if(evt.data!="连接成功"){
+        if(evt.data != "连接成功" && JSON.parse(evt.data)["status"]==2){//添加好友的消息接受
+          this.aDfmes.push(evt.data);
+        }
+        if(evt.data!="连接成功" && JSON.parse(evt.data)["status"]==1){//普通消息接受
+          this.mEss.push(evt.data);
           var mes=JSON.parse(evt.data);
-          if(mes["userNo"]==this.tolkTo && mes["status"]==1){
+          if(mes["userNo"]==this.tolkTo ){
             var a = mes["msg"];
             if(a.length>16){
               var str= "<p class='lt_df lt_df1'>" +
@@ -76,12 +138,12 @@
                 "</p>"
             }
             $('.lt_zong').append(str);
+            var div = document.getElementById("centre");
+            div.scrollTop =  div.scrollHeight;
           }
-
-
-
         }
         console.log(evt.data);
+        console.log(this.mEss);
       },
       onError:function()  {},
       onClose:function() {},
@@ -93,32 +155,37 @@
               status:"1",
               userNo:this.tolkTo,//要发送消息的用户的userId,ALL为发送给所有人
               msg:$('.lt_inp').val()
-            }
+            };
             vm.websocket.send(JSON.stringify(socketMsg));//调用后台handleTextMessage方法
-            if ($('.lt_inp').val().length>=16) {
-              var str='' +
+            var a={"time":"2017","status":"100","userNo":this.tolkTo,"msg":$('.lt_inp').val()};
+            this.mEss.push(  JSON.stringify(a));
+            var str="";
+              if ($('.lt_inp').val().length>=16) {
+              str='' +
                 '<p class="lt_df lt_df1 lt_rig"><span class="img2">' +
                 '<img src="http://appinter.sunwoda.com'+vm.myMessage.photo+' width="40" height="42"></span>' +
                 '<span class="lt_sjx lt_sjx1"></span>' +
                 '<span class="lt_zi lt_zi3 lt_zi1">'+$('.lt_inp').val()+'</span></p>';
-              $('.lt_zong').append(str);
-              $('.lt_inp').val('');
+
             } else{
-              var str='<p class="lt_df  lt_rig">' +
+               str='<p class="lt_df  lt_rig">' +
                 '<span class="img2"><img src="http://appinter.sunwoda.com'+vm.myMessage.photo+'width="40" height="42">' +
                 '</span><span class="lt_sjx lt_sjx1">' +
                 '</span><span class="lt_zi  lt_zi1">'+$('.lt_inp').val()+'</span></p>';
-              $('.lt_zong').append(str);
-              $('.lt_inp').val('');
             }
+            $('.lt_zong').append(str);
+            $('.lt_inp').val('');
+            var div = document.getElementById("centre");
+            div.scrollTop =  div.scrollHeight;
+            console.log(this.mEss);
           } else {
             alert("连接失败!");
           }
         }
-
       },
     },
     destroyed: function () {
+      this.websocket.onmessage =this.mes;
       console.log("关闭");
     }
 
@@ -162,7 +229,7 @@
   .lt_zong{
     padding: 0 0.17rem 0 0.24rem;
     height:85%;
-    overflow: scroll;
+    overflow:scroll;
     background: #e4e8f1;
   }
   .lt_zong>p{
