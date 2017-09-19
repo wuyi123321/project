@@ -15,7 +15,7 @@
              </div>
              </router-link>
            </li>
-           <li v-for="item in friList" v-bind:id="item.userNo" v-bind:name="item.userName" v-bind:fPhoto="item.headPhoto" v-bind:photo="myMessage.photo" >
+           <li v-for="item in friList" v-bind:id="item.userNo" v-bind:name="item.userName" v-bind:fPhoto="item.headPhoto" v-bind:photo="myMessage.photo" @click="clear(item.userNo)">
              <router-link :to="{path: '/info', query: {
                       fNo:item.userNo,
                       fName:item.userName,
@@ -28,12 +28,12 @@
                  <span v-if="item.online" style="color: #11b95c">在线</span>
                  <span v-if="item.online==false"style="color: #aaa">离线</span>
                  <el-badge :value="getPersonMnum(item.userNo)" ></el-badge></div>
-               <div class="time">下午2:12</div>
+               <div class="time"></div>
              </div>
              </router-link>
            </li>
          </ul>
-        <router-view :addFmesC="addFmesC" :websocket="websocket" :myMessage="myMessage" :mes="onMessage" :personMess="fMessC"></router-view>
+        <router-view :getNum="getNum" :addFmesC="addFmesC" :websocket="websocket" :myMessage="myMessage" :mes="onMessage" :personMess="fMessC"></router-view>
         <el-popover
           ref="popover1"
           placement="left"
@@ -54,7 +54,6 @@
 </template>
 
 <script>
-  var getNum=[]
 export default {
   props:{
     addFmes:Array,
@@ -64,6 +63,7 @@ export default {
     websocket:WebSocket,
     fMess:Array,
     mesend:Function,
+    fMess1:Array
   },
   data () {
     return {
@@ -71,16 +71,18 @@ export default {
       friList:{},
       addFmesC:[],
       fMessC:[],
+      getNum:[]
     }
   },
   created: function () {
     this.websocket.onmessage =this.onMessage;
     this.websocket.onopen =this.onOpen;
+    this.getNum = this.fMess1;
+    console.log(this.getNum);
   },
-    mounted: function () {
+  mounted: function () {
     this.addFmesC=this.addFmes;
     this.fMessC=this.fMess;
-
     if(this.addFmes.length>0){
       this.badgehid=false;
     }
@@ -97,14 +99,28 @@ export default {
   methods:{
     //获取不同人的消息数量
     getPersonMnum:function(uNo) {
-     getNum = new Array(this.fMessC);
       var num=0;
-      for (var i=0;i<getNum[0].length;i++){
-      if(JSON.parse(getNum[0][i]).userNo==uNo){
+      for (var i=0;i<this.getNum.length;i++){
+      if(JSON.parse(this.getNum[i]).userNo==uNo ){
           num++
        }
       }
       return num
+    },
+    clear:function (uNo) {
+      console.log(this.getNum);
+      var i=this.getNum.length;
+      while(i--){
+        if(JSON.parse(this.getNum[i]).userNo==uNo){
+          this.getNum.splice(i,1);
+        }
+      }
+//      for (var i=0;i<this.getNum.length;i++){//数组遍历删除不能用这种方法
+//        if(JSON.parse(this.getNum[i]).userNo==uNo){
+//          console.log(i);
+//        this.getNum.splice(i,1);
+//        }
+//      }
     },
     agree:function (event) {
       var vm = this;
@@ -147,18 +163,25 @@ export default {
       if(evt.data != "连接成功" && JSON.parse(evt.data)["status"]==1){
        var id=JSON.parse(evt.data)["userNo"];
         this.fMessC.push(evt.data);
-        getNum.push(evt.data);
-        console.log($("#"+id+" "+".el-badge__content")[0].innerHTML);
-      }
-      if(this.addFmes.length>0){
+        this.getNum.push(evt.data);
+        $("#"+id+" "+".el-badge__content")[0].style="display:block";
+        $("#"+id+" "+".el-badge__content")[0].innerHTML=parseInt($("#"+id+" "+".el-badge__content")[0].innerHTML)+1;
+        console.log( $("#"+id+" " +".time")[0]);
+
+        $("#"+id+" " +".time")[0].innerHTML=JSON.parse(evt.data)["TIME"].slice(5,16);
+        console.log(this.getNum);
+    }
+      if(this.addFmes.length>0){//添加好友请求数量大于零
         this.badgehid=false;
       }
       console.log(evt.data);
       console.log(this.addFmesC);
       console.log(this.fMessC);
     },
+
   },
-  computed: {},
+  computed: {
+  },
   destroyed: function () {
     this.websocket.onmessage =this.mesend;
     console.log("关闭1");

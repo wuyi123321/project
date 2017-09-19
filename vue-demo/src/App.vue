@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <router-view class="abb"  :mesend="onMessage" :fMess="fMess" :addFmes="addFmes" :websocket="websocket" :myMessage="myMessage" :peopleList="peopleList" :vipList="vipList" :lType="lType" :token="token" :userNo="userNo"></router-view>
+    <router-view class="abb" :fMess1="fMess1" :mesend="onMessage" :fMess="fMess" :addFmes="addFmes" :websocket="websocket" :myMessage="myMessage" :peopleList="peopleList" :vipList="vipList" :lType="lType" :token="token" :userNo="userNo"></router-view>
     <div id="bottom">
         <div class="item"><router-link to="/index">主页</router-link></div>
         <div class="item"><router-link to="/love">情感天地</router-link></div>
@@ -11,10 +11,11 @@
 </template>
 <script>
  import $ from 'jquery'
-var token = "00098635bd29551e6151a76edd395cec";
+//var token = "00098635bd29551e6151a76edd395cec";
 //var token="d8786b5210b25d6232ccf7b1b95ad2bd";
 // var token="427ac2cd8217032e75e00e57d42e1fc6";
-//var token = "7d37573b9e465f676ecc233c4b72cbeb";
+var token = "7d37573b9e465f676ecc233c4b72cbeb";
+// var token ="d6519a7ba2b67b3593e7f2e54f80bc8f";
  (function ($) {
     $.getUrlParam = function (name) {
       var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
@@ -25,6 +26,7 @@ var token = "00098635bd29551e6151a76edd395cec";
   if($.getUrlParam("token")!=null){
     token = $.getUrlParam("token");
   }
+var chatDate=["1"];
 
 export default {
   name: 'app',
@@ -39,11 +41,13 @@ export default {
       websocket:null,
       addFmes:[],
       fMess:[],
+      fMess1:[],
       mesNum:0
     }
   },
   mounted: function(){
     this.getmessage();
+    chatDate=this.fMess;
   },
   methods:{
     getmessage(){
@@ -58,6 +62,18 @@ export default {
           vm.getList(response.data.message);//获取主页信息
           vm.getvipList(response.data.message,"推荐");
           vm.websocket = new WebSocket("ws://appinter.sunwoda.com:9002/springws/websocket?token="+token);
+//         if(localStorage.getItem("chat")!=null){
+           var strcha=localStorage.getItem("chat");
+           var chatJaon=JSON.parse(strcha);
+          console.log(strcha);
+          console.log(chatJaon)
+          console.log(chatJaon["cha"]);
+          for(var i=0;i<chatJaon["cha"].length;i++){
+            this.fMess.push(chatJaon["cha"][i]);
+          }
+          console.log(this.fMess);
+//          this.fMess=chatJaon["cha"];
+//         }
           vm.websocket.onopen =this.onOpen;
           vm.websocket.onmessage =this.onMessage;
           vm.websocket.onerror = this.onError;
@@ -79,6 +95,7 @@ export default {
       }
       if(evt.data != "连接成功" && JSON.parse(evt.data)["status"]==1){
         this.fMess.push(evt.data);
+        this.fMess1.push(evt.data);
         this.mesNum++
       }
       console.log(evt.data);
@@ -87,7 +104,6 @@ export default {
  },
     onError:function()  {},
     onClose:function() {},
-
     doSendfunction () {
    if (websocket.readyState == (websocket.OPEN==undefined?1:websocket.OPEN)) {
      var msg = document.getElementById("inputMsg").value;
@@ -102,7 +118,6 @@ export default {
      alert("连接失败!");
    }
  },
-
     //获取个人信息
     getMemessage(userNO){
       let vm = this;
@@ -145,13 +160,21 @@ export default {
     clearMess(){
       this.mesNum=0;
     },
-
   }
 
 }
- window.close=function()
- {
-   websocket.onclose();
+ window.onunload=function () {
+   console.log("Aaaaa");
+   console.log("aa"+chatDate);
+
+   if(chatDate != []){
+     var b={
+       cha:chatDate
+     };
+     var strChat=JSON.stringify(b);
+     localStorage.setItem("chat", strChat);
+   }
+
  }
 </script>
 
@@ -176,6 +199,6 @@ export default {
     background: #eeeeee;
 }
 .abb{
-  margin-bottom: 40px;
+  margin-bottom: 41px;
 }
 </style>

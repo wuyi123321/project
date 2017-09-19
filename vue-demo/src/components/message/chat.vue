@@ -7,7 +7,22 @@
       <div class="item">{{name}}</div>
       <div class="item"></div>
       <div class="item"></div>
-      <i class="icon-user item"></i>
+      <el-popover
+        ref="topik"
+        placement="bottom"
+        width="50"
+        visible-arrow="false"
+     >
+      <div style="width: 70px;color: #555">
+         <ul >
+           <li style="text-align: center;border-bottom: solid #eee 1px;height: 25px;line-height: 25px" @click="cleartolk">清空消息</li>
+           <li style="text-align: center;border-bottom: solid #eee 1px;height: 25px;line-height: 25px">删除好友</li>
+           <li style="text-align: center;height: 25px;line-height: 25px">好友详情</li>
+         </ul>
+      </div>
+
+      </el-popover>
+      <i class="icon-user item"  v-popover:topik></i>
     </div>
     <div class="lt_zong" id="centre">
       <p class="lt_df lt_df1" v-if="admin">
@@ -32,11 +47,12 @@
 <script>
   export default{
     props:{
-      myMessage:Object,
+      myMessage:Object,//我的信息
       websocket:WebSocket,
-      mes:Function,
-      personMess:Array,
-      addFmesC:Array
+      mes:Function,//父类接受消息的函数
+      personMess:Array,//所有好友信息
+      addFmesC:Array,//添加好友的信息
+      getNum:Array//其他好友的信息
     },
     data: function() {
       return {
@@ -45,14 +61,14 @@
         fPhoto:'',
         mEss:[],
         aDfmes:[],
-        admin:false
+        admin:false,//管理员默认消息状态
+        getNumF:[]
       }
     },
     mounted: function(){
       if(this.$route.query.fNo=='123'){
         this.admin=true
       }
-
       console.log(this.personMess);
       this.name=this.$route.query.fName;
       this.tolkTo=this.$route.query.fNo;
@@ -60,20 +76,20 @@
       this.websocket.onmessage =this.onMessage;
       this.mEss=this.personMess;
       this.aDfmes=this.addFmesC;
+      this.getNumF=this.getNum;
       this.getPersonMess();
     },
     methods:{
+      //关闭箭头执行函数
       closeSend:function () {
         console.log("Aaa");
         this.$router.go(-1);
       },
-      onOpen: function(openEvt) {
-        console.log(openEvt);
-      },
+      //消息填充页面函数
       getPersonMess:function () {
         var vm=this;
        for (var i=0;i<this.personMess.length;i++){
-         if(JSON.parse(this.personMess[i])["userNo"]==this.tolkTo && JSON.parse(this.personMess[i])["status"]==1){
+         if(JSON.parse(this.personMess[i])["userNo"]==this.tolkTo && JSON.parse(this.personMess[i])["status"]==1){//好友给我发的消息
            var a =JSON.parse(this.personMess[i])["msg"];
            if(a.length>16){
              var str= "<p class='lt_df lt_df1'>" +
@@ -92,7 +108,7 @@
            var div = document.getElementById("centre");
            div.scrollTop =  div.scrollHeight;
            }
-           else if(JSON.parse(this.personMess[i])["userNo"]==this.tolkTo && JSON.parse(this.personMess[i])["status"]==100){
+           else if(JSON.parse(this.personMess[i])["userNo"]==this.tolkTo && JSON.parse(this.personMess[i])["status"]==100){//我的回复消息
            var a =JSON.parse(this.personMess[i])["msg"];
            if (a.length>=16) {
              var str='' +
@@ -122,7 +138,7 @@
         if(evt.data!="连接成功" && JSON.parse(evt.data)["status"]==1){//普通消息接受
           this.mEss.push(evt.data);
           var mes=JSON.parse(evt.data);
-          if(mes["userNo"]==this.tolkTo ){
+          if(mes["userNo"]==this.tolkTo ){//好友消息
             var a = mes["msg"];
             if(a.length>16){
               var str= "<p class='lt_df lt_df1'>" +
@@ -140,6 +156,8 @@
             $('.lt_zong').append(str);
             var div = document.getElementById("centre");
             div.scrollTop =  div.scrollHeight;
+          }else {//其他好友消息
+            this.getNumF.push(evt.data);
           }
         }
         console.log(evt.data);
@@ -147,7 +165,7 @@
       },
       onError:function()  {},
       onClose:function() {},
-      doSendfunction () {
+      doSendfunction () {//发消息
         var vm =this;
         if($('.lt_inp').val()!=''){
           if (vm.websocket.readyState == (vm.websocket.OPEN==undefined?1:vm.websocket.OPEN)) {
@@ -183,6 +201,17 @@
           }
         }
       },
+      cleartolk:function () {//清空删除好友消息
+        console.log("aaa");
+        var i=this.mEss.length;
+        while(i--){
+          if(JSON.parse(this.mEss[i]).userNo==this.tolkTo){
+            this.mEss.splice(i,1);
+          }
+        }
+        this.$message('删除完成');
+        this.$router.go(-1);
+      }
     },
     destroyed: function () {
       this.websocket.onmessage =this.mes;
@@ -195,7 +224,7 @@
   #messageContent{
     position: absolute;
     top: 0;
-     z-index: 9999;
+    z-index: 999;
     width: 100%;
     font-size: 0.3rem;
     height: 100%;
@@ -290,6 +319,7 @@
   }
   .lt_zi1{
     float: right;
+
   }
   .lt_zi3{
     width: 4.16rem;
@@ -335,6 +365,8 @@
     margin-right: 0.22rem;
     line-height: 0.6rem;
   }
-
-
+.el-popover{
+  min-width: 70px;
+  padding: 0;
+}
 </style>

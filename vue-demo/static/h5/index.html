@@ -16,6 +16,16 @@
 
 <body>
 <div id="main">
+<div class="bgMessage" id="bgMessage">
+    <div class="imgBg">
+      <div class="bg_content" id="bg_content" >
+        <img src="../images/bg.png" width="100%">
+        <div class="bg_text">欢迎来到缘分天空
+        <span class="qudi" @click="closeMess">确定</span>
+        </div>
+      </div>
+    </div>
+  </div>
 <div class="title">结缘注册</div>
 <div class="personmessage">
     <div class="p_title">基本信息</div>
@@ -112,7 +122,7 @@
 <div class="personmessage">
     <div class="p_title">结缘宣言</div>
     <div class="message">
-    <el-input type="textarea" style="height: 100%" v-model="pLanguage"></el-input>
+    <el-input type="textarea" style="height: 100%" v-model="pLanguage" placeholder="对爱的态度，对情的发言，让更多人了解你"></el-input>
     </div>
 </div>
   <div id="smallimages"  @click="det"></div>
@@ -195,82 +205,89 @@
       }
     },
     methods: {
-      preImg:function(){
-          imgsrcs.push(document.getElementById("inputfile").files[0]);//获取表单文件往imgsrcs里加
-          var src = getFileUrl("inputfile",0);
-          console.log(src);
-          $("#smallimages").append("<div class='cream'>"+
-            "<img width='19px' height='19px' src='../images/ic_delete.png' class='delete'>"+
-            "<img class='smallimg' width='100%' height='100%' src='"+src+"'> </div>");
+      preImg: function () {
+        imgsrcs.push(document.getElementById("inputfile").files[0]);//获取表单文件往imgsrcs里加
+        var src = getFileUrl("inputfile", 0);
+        console.log(src);
+        $("#smallimages").append("<div class='cream'>" +
+          "<img width='19px' height='19px' src='../images/ic_delete.png' class='delete'>" +
+          "<img class='smallimg' width='100%' height='100%' src='" + src + "'> </div>");
         console.log(imgsrcs);
-        this.addimage=false;
+        this.addimage = false;
       },
-      close:function(){
-        this.show=false;
+      close: function () {
+        this.show = false;
       },
-      det:function (event) {//删除图片
-        if(event.target.className=="delete"){
+      closeMess: function () {
+        $("#bgMessage").animate({height: "0"}, "slow", function () {
+          $("#bg_content").css("display", "none")
+        })
+      },
+      det: function (event) {//删除图片
+        if (event.target.className == "delete") {
           event.target.parentNode.remove();
-          this.addimage=true;
-        }else {
+          this.addimage = true;
+        } else {
           console.log("Aaa");
-          this.show=true;
-          var file=event.target.src;
-          $("#blackBg2").html("<div id='bigImg'><img src='"+file+"'/></div>");
+          this.show = true;
+          var file = event.target.src;
+          $("#blackBg2").html("<div id='bigImg'><img src='" + file + "'/></div>");
         }
       },
-      submit:function () {
-//        if(imgsrcs.length!=0 && lTypes !=""){
-        $("#blackBg3").css("display","block");
-//          String userNo,String username,Integer gender,
-//            String birthday, String height, String weight,String education,
-//            String monthlyIncome, String area, String maritalStatus, MultipartFile photo, String lTypes
-        var photo = imgsrcs[0];
-        var sex;
-        if(a.sex=="男"){
-          sex=1;
-        }else {
-          sex=0;
-        }
-        console.log(photo);
-        var formData = new FormData();
-        formData.append('birthday',a.birthday);
-        formData.append('photo',photo);
-        formData.append('userNo',a.userNo);
-        formData.append('username',a.userName);
-        formData.append('gender',sex);
-        formData.append('weight',0);
-        formData.append('height',a.height);
-        formData.append('education',a.education);
-        formData.append('monthlyIncome',a.monthlyIncome);
-        formData.append('area',a.area);
-        formData.append('token',token);
-        formData.append('department',a.deptName);
-        formData.append('tel',a.tel);
-        formData.append('lTypes',a.lTypes);
-        formData.append('maritalStatus',a.maritalStatus);
-        formData.append('pLanguage',a.pLanguage);
-        $.ajax({
-          type:"post",
-          //url:"http://172.16.98.74:8080/swdAPP/common/LoveTheSkyUser/registerLoveTheSkyUser.json",
-          url:"http://appinter.sunwoda.com/common/LoveTheSkyUser/registerLoveTheSkyUser.json",
-          data:formData,
-          cache: false,
-          contentType: false,
-          processData:false,
-          mimeType:"multipart/form-data",
-          success:function(data){
-            var a=JSON.parse(data)
-            $("#blackBg3").css("display","none");
-            console.log(a["statusCode"]);
-            if(a["statusCode"]==0){
-              window.location.href="../../index.html?token="+token+""
+      submit: function () {
+        if (imgsrcs.length == 0 || this.birthday == "" || this.height == "" || this.monthlyIncome=="" || this.area=="" || this.education=="" || this.lTypes=="" || this.pLanguage=="")
+   {
+     this.$message('填写完整信息');
+     } else {
+          $("#blackBg3").css("display", "block");
+
+          var photo = imgsrcs[0];
+          var sex;
+          if (a.sex == "男") {
+            sex = 1;
+          } else {
+            sex = 0;
+          }
+          console.log(photo);
+          var formData = new FormData();
+          formData.append('birthday', a.birthday);
+          formData.append('photo', photo);
+          formData.append('userNo', a.userNo);
+          formData.append('username', a.userName);
+          formData.append('gender', sex);
+          formData.append('weight', "");
+          formData.append('height', a.height);
+          formData.append('education', a.education);
+          formData.append('monthlyIncome', a.monthlyIncome);
+          formData.append('area', a.area);
+          formData.append('token', token);
+          formData.append('department', a.deptName);
+          formData.append('tel', a.tel);
+          formData.append('lTypes', a.lTypes);
+          formData.append('maritalStatus', a.maritalStatus);
+          formData.append('pLanguage', a.pLanguage);
+          $.ajax({
+            type: "post",
+            //url:"http://172.16.98.74:8080/swdAPP/common/LoveTheSkyUser/registerLoveTheSkyUser.json",
+            url: "http://appinter.sunwoda.com/common/LoveTheSkyUser/registerLoveTheSkyUser.json",
+            data: formData,
+            cache: false,
+            contentType: false,
+            processData: false,
+            mimeType: "multipart/form-data",
+            success: function (data) {
+              var a = JSON.parse(data)
+              $("#blackBg3").css("display", "none");
+              console.log(a["statusCode"]);
+              if (a["statusCode"] == 0) {
+                window.location.href = "../../index.html?token=" + token + ""
+              }
             }
-          }});
-      }
+          });
+        }
 
       }
-
+    }
   })
 </script>
 

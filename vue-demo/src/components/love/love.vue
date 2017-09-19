@@ -27,11 +27,12 @@
                 <div class="name">{{item.userName}}<i>
                   <el-popover
                     placement="bottom"
-                    title="添加回复"
                     width="250"
                     trigger="click">
+                    <div style="padding: 10px">
+                      <div style="padding-bottom: 5px;font-size: 0.25rem" >添加回复</div>
                     <el-input type="textarea" placeholder="期待您的神回复" v-model="replay"></el-input>
-                    <div class="submessage" @click="submessage" v-bind:id="item.pMessageId" v-bind:fId="item.replyId">确定</div>
+                    <div class="submessage" @click="submessage" v-bind:id="item.pMessageId" v-bind:fId="item.replyId">确定</div></div>
                     <i class="icon-comment"  slot="reference"></i>
                   </el-popover></i></div>
                 <div class="me_txt">{{item.pMessage}}</div>
@@ -43,11 +44,12 @@
                 <div class="name">{{item.userName}}<span style="margin-left: 5px;margin-right: 5px">回复</span>{{item.fName}}<i>
                   <el-popover
                     placement="bottom"
-                    title="添加回复"
                     width="250"
                     trigger="click">
+                    <div style="padding: 10px">
+                      <div style="padding-bottom: 5px;font-size: 0.25rem" >添加回复</div>
                     <el-input type="textarea" placeholder="期待您的神回复" v-model="replay"></el-input>
-                    <div class="submessage" @click="submessage" v-bind:id="item.pMessageId" v-bind:fId="item.replyId">确定</div>
+                      <div class="submessage" @click="submessage" v-bind:id="item.pMessageId" v-bind:fId="item.replyId">确定</div></div>
                     <i class="icon-comment"  slot="reference"></i>
                   </el-popover></i></div>
                 <div class="me_txt">{{item.pMessage}}</div>
@@ -60,18 +62,20 @@
           <i class="icon-thumbs-down" @click="dTotal"  v-bind:id="item.messageId"><span>{{item.dTotal}}</span></i>
           <i><el-popover
             placement="bottom"
-            title="添加回复"
             width="250"
             trigger="click">
+            <div style="padding: 10px">
+              <div style="padding-bottom: 5px;font-size: 0.25rem" >添加回复</div>
             <el-input type="textarea" placeholder="期待您的神回复" v-model="replay"></el-input>
             <div class="submessage" @click="submessage" v-bind:id="item.messageId" v-bind:fId="0">确定</div>
+          </div>
             <i class="icon-comment"  slot="reference"></i>
           </el-popover>
           </i>
         </div>
       </div>
     </div></Scroll>
-    <person id="me" :myMessage="peopleMessage" :websocket="websocket"  ></person>
+    <person id="person" :myMessage="peopleMessage" :websocket="websocket"  ></person>
     <bigImg v-if="showImg" @clickit="viewImg" :imgSrc="imgSrc"></bigImg>
   </div>
 </template>
@@ -119,7 +123,7 @@
       showPeople:function () {//人物展示页面显示
         var perNo=event.target.getAttribute("id");
         this.getPeopleMemessage(perNo);
-        $("#me").animate({width:"100vw"},"fast")
+        $("#person").animate({width:"100vw"},"fast")
       },
       getTp:function () {
 
@@ -137,7 +141,7 @@
             if(response.data.message=="操作成功"){
               this.$message('提交成功');
               this.replay="";
-              vm.go(0);
+
               $(".el-popover").css("display","none");
             }else {
               this.$message('评论失败');
@@ -261,7 +265,7 @@
   #love{
     font-size: 0.25rem;
   }
-  #love #me{
+  #love #person{
     width: 0;
     position: fixed;;
     top:0;

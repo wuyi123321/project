@@ -111,31 +111,36 @@
         console.log(this.imgsrcs);
       },
       subm:function () {
-       var vm = this;
-    $("#blackBg3").css("display","block");
-        var formData = new FormData();
-        for(var k in this.imgsrcs){ //文件数组
-          formData.append('pPath',this.imgsrcs[k]);
+        if(this.addType=="" || this.addContent==""){
+          this.$message('请填写完整信息');
+        }else {
+          var vm = this;
+          $("#blackBg3").css("display","block");
+          var formData = new FormData();
+          for(var k in this.imgsrcs){ //文件数组
+            formData.append('pPath',this.imgsrcs[k]);
+          }
+          formData.append('type',this.addType);
+          formData.append('message',this.addContent);
+          formData.append('userNo',this.userNo);
+          formData.append('token',this.token);
+          console.log(this.userNo+this.imgsrcs+this.addContent+this.addType+this.token)
+          $.ajax({
+            type:"post",
+            url:"http://appinter.sunwoda.com/common/LoveTheSkyUser/makeStatement.json",
+            data:formData,
+            cache: false,
+            contentType: false,
+            processData:false,
+            mimeType:"multipart/form-data",
+            success:function(data){
+              console.log(data);
+              var a=JSON.parse(data)
+              $("#blackBg3").css("display","none");
+              vm.$emit('close');
+              $("#addItem").animate({height:"0"},"fast")
+            }});
         }
-        formData.append('type',this.addType);
-        formData.append('message',this.addContent);
-        formData.append('userNo',this.userNo);
-        formData.append('token',this.token);
-        console.log(this.userNo+this.imgsrcs+this.addContent+this.addType+this.token)
-        $.ajax({
-          type:"post",
-          url:"http://appinter.sunwoda.com/common/LoveTheSkyUser/makeStatement.json",
-          data:formData,
-          cache: false,
-          contentType: false,
-          processData:false,
-          mimeType:"multipart/form-data",
-          success:function(data){
-            console.log(data);
-            var a=JSON.parse(data)
-            $("#blackBg3").css("display","none");
-            vm.$emit('close');
-         }});
       }
     },
 
@@ -143,7 +148,7 @@
 </script>
 
 <style>
-.addItem{
+  .addItem{
     width: 100%;
     height: 0;
     position: fixed;
@@ -153,13 +158,13 @@
     background-color: #fff;
     overflow: hidden;
   }
-.addItem .add_top{
+  .addItem .add_top{
     width: 100%;
     height: 40px;
     color: #888;
 
   }
-.addItem .add_top span{
+  .addItem .add_top span{
     float: right;
     display: inline-block;
     width: 50px;
@@ -167,69 +172,69 @@
     line-height: 40px;
     color: #fda7f7;
   }
-.addItem .add_top i{
+  .addItem .add_top i{
     display: inline-block;
     width: 50px;
     height: 40px;
     line-height: 40px;
     text-align: center;
   }
-.addItem .add_content{
-  border-top: dashed #fda7f7 1px;
- text-align: center;
-  border-bottom: dashed #fda7f7 1px;
-}
-.addItem .add_content .el-select{
-  margin-top: 10px;
-  width: 80%;
-  text-align: center;
-}
-.addItem .add_content .el-textarea{
-  margin-top: 10px;
-  width: 80%;
-  margin-bottom: 10px;
-}
-.addphoto{
-  margin-top: 10px;
-  margin-left: 0.35rem;
-  width: 1.6rem;
-  height: 1.8rem;
-  border-radius: 4px;
-  border: dotted #aaa 1px;
-  font-size: 0.8rem;
-  text-align: center;
-  line-height: 1.8rem;
-  font-weight: 200;
-  color: #888888;
-  position: relative;
-  display: inline-block;
-  overflow: hidden;
-  text-decoration: none;
-  text-indent: 0;
-}
-.addphoto input {
-  position: absolute;
-  font-size: 100px;
-  right: 0;
-  top: 0;
-  opacity: 0;
-}
-.addphoto:hover {
-  text-decoration: none;
-}
-#smallimages .cream{
-  margin-top: 10px;
-  float: left;
-  margin-left: 0.35rem;
-  width: 1.6rem;
-  height: 1.8rem;
-  border: solid #dddddd 1px;
-  border-radius: 4px;
-  position: relative;
-}
-#smallimages .cream .delete{
-  position: absolute;
-  right: 5px;
-  top: 5px;
-}
+  .addItem .add_content{
+    border-top: dashed #fda7f7 1px;
+    text-align: center;
+    border-bottom: dashed #fda7f7 1px;
+  }
+  .addItem .add_content .el-select{
+    margin-top: 10px;
+    width: 80%;
+    text-align: center;
+  }
+  .addItem .add_content .el-textarea{
+    margin-top: 10px;
+    width: 80%;
+    margin-bottom: 10px;
+  }
+  .addphoto{
+    margin-top: 10px;
+    margin-left: 0.35rem;
+    width: 1.6rem;
+    height: 1.8rem;
+    border-radius: 4px;
+    border: dotted #aaa 1px;
+    font-size: 0.8rem;
+    text-align: center;
+    line-height: 1.8rem;
+    font-weight: 200;
+    color: #888888;
+    position: relative;
+    display: inline-block;
+    overflow: hidden;
+    text-decoration: none;
+    text-indent: 0;
+  }
+  .addphoto input {
+    position: absolute;
+    font-size: 100px;
+    right: 0;
+    top: 0;
+    opacity: 0;
+  }
+  .addphoto:hover {
+    text-decoration: none;
+  }
+  #smallimages .cream{
+    margin-top: 10px;
+    float: left;
+    margin-left: 0.35rem;
+    width: 1.6rem;
+    height: 1.8rem;
+    border: solid #dddddd 1px;
+    border-radius: 4px;
+    position: relative;
+  }
+  #smallimages .cream .delete{
+    position: absolute;
+    right: 5px;
+    top: 5px;
+  }
 </style>

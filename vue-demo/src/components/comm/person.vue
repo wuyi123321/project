@@ -1,10 +1,10 @@
 <template>
-  <div id="me">
+  <div id="person">
     <div id="left">
       <div class="top">
         <i class="icon-angle-left" @click="removePerson"></i>
         <div class="photo">
-          <div class="img"><img v-bind:src="'http://appinter.sunwoda.com'+myMessage.photo" width="120" height="120"/></div>
+          <div class="img" ><img v-bind:src="'http://appinter.sunwoda.com'+myMessage.photo" width="120" height="120" /></div>
           <i class="icon-plus" @click="addF" :id="myMessage.userNo">加好友</i>
         </div>
         <div class="name">{{myMessage.username}}</div>
@@ -77,8 +77,9 @@
       }
     },
     methods:{
+
       removePerson:function () {
-        $("#me").animate({width:"0"},"fast")
+        $("#person").animate({width:"0"},"fast")
       },
       mesShowBase:function () {
         $("#right").animate({width:"100vw"},"fast");
@@ -274,21 +275,21 @@
 
 <style>
 
-  #me .top i{
+  #person .top i{
     position: absolute;
     left: 10px;
     top: 10px;
     font-size: 0.5rem;
   }
 
-  #me{
+  #person{
     clear: both;
     height: 100%;
     overflow: hidden;
     font-size: 0.25rem;
-    z-index: 998;
+    z-index: 999;
   }
-  #me .photo{
+  #person .photo{
     margin: 0 auto;
     width: 100%;
     height: 130px;
@@ -296,7 +297,7 @@
     padding-top: 10px;
 
   }
-  #me .photo i{
+  #person .photo i{
     display: flex;
     justify-content: center;
     align-items: center;
@@ -308,14 +309,14 @@
     top: 100px;
 
   }
-  #me .photo .img{
+  #person .photo .img{
     margin: 0 auto;
     width:120px ;
     height: 120px;
     border-radius: 50%;
     overflow: hidden;
   }
-  #me .top .name{
+  #person .top .name{
     margin-top: -0.15rem;
     width: 100%;
     font-size: 0.35rem;
@@ -323,31 +324,31 @@
     border-bottom: solid #fda7f7 1px;
     z-index: 999;
   }
-  #me .basemessage{
+  #person .basemessage{
     position: relative;
     font-size: 0.25rem;
     border-bottom: solid #fda7f7 1px;
   }
-  #me .basemessage ul li{
+  #person .basemessage ul li{
     height: 30px;
     line-height: 30px;
   }
-  #me #left ul li i{
+  #person #left ul li i{
     font-size: 0.3rem;
     margin-left: 10px;
     color: #555;
   }
-  #me #left ul li i span{
+  #person #left ul li i span{
     font-size: 0.23rem;
     margin-left: 5px;
   }
-  #me #left .c_title{
+  #person #left .c_title{
     padding-top:0.1rem;
     padding-bottom:0.1rem;
     color: #4db3ff;
     font-size: 0.25rem;
   }
-  #me #left .basemessage .right{
+  #person #left .basemessage .right{
     position: absolute;
     height: 100%;
     top: 0;
@@ -355,7 +356,7 @@
     display: flex;
     align-items: center;
   }
-  #me #left .basemessage p{
+  #person #left .basemessage p{
     font-size: 0.22rem;
     padding-left: 10px;
     padding-right: 10px;
