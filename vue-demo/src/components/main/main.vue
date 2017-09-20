@@ -72,7 +72,6 @@
         <ul>
           <li class="list_item">
             <div class="img_item">
-
               <div class="img_show" >
                 <a href="http://mp.weixin.qq.com/s/oNME5Zj3TfJcciylsbleHg"><img src="../../assets/active.png" /></a>
               </div>

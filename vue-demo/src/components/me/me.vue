@@ -9,6 +9,7 @@
             <span v-show="subImg" @click="submitImg">确定</span>
             <div id="smallimages" @click="det"></div>
             <div class="addImg" v-show="addImg" ><input type="file" accept="image/*" capture="camera"  id="inputfile" @change="showImg"/><i class="icon-plus"></i></div></div>
+            <div class="bgound"><img v-bind:src="'http://appinter.sunwoda.com'+myMessage.photo" width="100%" height="100%"/></div>
         </div>
         <div class="name">{{myMessage.username}}</div>
       </div>
@@ -67,6 +68,17 @@
       <div class="basemessage">
         <div class="c_title">爱情宣言</div>
         <p>{{myMessage.pLanguage}}</p>
+      </div>
+      <div class="basemessage">
+        <div class="c_title">照片墙</div>
+        <div class="imgs">
+          <div v-for="i in 3" class="imgItem">
+            <img v-bind:src="'http://appinter.sunwoda.com'+myMessage.photo"/>
+          </div>
+        </div>
+        <div class="right">
+          <i class="icon-angle-right"  @click="mesShowLove" ></i>
+        </div>
       </div>
     </div>
     <div id="right">
@@ -447,7 +459,7 @@
       hidRight:function () {
         $("#right").animate({width:"0"},"fast")
       },
-    },
+    }
   }
 </script>
 <style>
@@ -461,11 +473,22 @@
     position: relative;
   }
   #me .photo{
+    position: relative;
     margin: 0 auto;
     width: 100%;
     height: 130px;
-    background:#baf7fd ;
+    background:rgba(186,247,253,0.3);
     padding-top: 10px;
+    overflow: hidden;
+  }
+  #me .photo .bgound{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    filter: blur(5px);
   }
   #me .photo .img{
     margin: 0 auto;
@@ -524,7 +547,7 @@
     top: 0;
     opacity: 0;
   }
-  #smallimages{
+ #me #smallimages{
     top: 20px;
     right: 20px;
     position: absolute;
@@ -534,11 +557,11 @@
     border: solid #bbb 1px;
     overflow: hidden;
   }
-  #smallimages .cream{
+ #me #smallimages .cream{
     width:100px ;
     height: 100px;
   }
-  #smallimages .cream .delete{
+ #me #smallimages .cream .delete{
     position: absolute;
     right: 5px;
     top: 5px;
@@ -576,6 +599,33 @@
     height: 30px;
     line-height: 30px;
   }
+  #me .basemessage .imgs{
+    display: flex;
+    height: 33vw;
+    background: #bbb;
+    justify-content: center;
+    align-items: center;
+  }
+  #me .basemessage .imgs .imgItem:first-child{
+    border-right: solid 1px #fff;
+  }
+  #me .basemessage .imgs .imgItem:last-child{
+    border-left: solid 1px #fff;
+  }
+  #me .basemessage .imgs .imgItem{
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+  }
+
+  #me .basemessage .imgs .imgItem img{
+    border: solid 3px #fff;
+    width: 30vw;
+    height: 30vw;
+  }
+
   #me #left ul li i{
     font-size: 0.3rem;
     margin-left: 10px;

@@ -37,9 +37,10 @@
         <el-popover
           ref="popover1"
           placement="left"
-          title="验证消息"
           width="220"
           trigger="click">
+          <div>
+          <div style="padding-bottom: 5px">好友请求</div>
            <div v-for="(i,index) in addFmesC" class="add_item">
                  {{JSON.parse(i).userNo}}
                  {{JSON.parse(i).msg}}
@@ -47,6 +48,7 @@
                <span :id="JSON.parse(i).userNo" :index="index" @click="agree">同意添加</span> <span @click="disagree" :index="index">不同意</span>
              </div>
            </div>
+          </div>
         </el-popover>
         <div id="addMes" v-popover:popover1><el-badge is-dot :hidden="badgehid">好友请求</el-badge>
          </div>

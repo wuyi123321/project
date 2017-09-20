@@ -153,7 +153,7 @@
     height: 0;
     position: fixed;
     top: 0;
-    z-index: 101;
+    z-index: 999;
     font-size: 0.3rem;
     background-color: #fff;
     overflow: hidden;
@@ -222,7 +222,7 @@
   .addphoto:hover {
     text-decoration: none;
   }
-  #smallimages .cream{
+  .addItem #smallimages .cream{
     margin-top: 10px;
     float: left;
     margin-left: 0.35rem;
@@ -232,7 +232,7 @@
     border-radius: 4px;
     position: relative;
   }
-  #smallimages .cream .delete{
+  .addItem #smallimages .cream .delete{
     position: absolute;
     right: 5px;
     top: 5px;

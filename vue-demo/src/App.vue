@@ -2,10 +2,11 @@
   <div id="app">
     <router-view class="abb" :fMess1="fMess1" :mesend="onMessage" :fMess="fMess" :addFmes="addFmes" :websocket="websocket" :myMessage="myMessage" :peopleList="peopleList" :vipList="vipList" :lType="lType" :token="token" :userNo="userNo"></router-view>
     <div id="bottom">
-        <div class="item"><router-link to="/index">主页</router-link></div>
-        <div class="item"><router-link to="/love">情感天地</router-link></div>
-        <div class="item" @click="clearMess"><router-link to="/message"><el-badge v-model="mesNum" >消息</el-badge></router-link></div>
-        <div class="item"><router-link to="/me">我</router-link></div>
+        <div class="item"><router-link to="/index"><span>主页</span></router-link></div>
+        <div class="item"><router-link to="/love"><span>情感天地</span></router-link></div>
+        <div class="item" @click="clearMess">
+          <router-link to="/message"><el-badge v-model="mesNum" ><span>消息</span></el-badge></router-link></div>
+        <div class="item"><router-link to="/me"><span>我</span></router-link></div>
     </div>
   </div>
 </template>
@@ -13,8 +14,8 @@
  import $ from 'jquery'
 //var token = "00098635bd29551e6151a76edd395cec";
 //var token="d8786b5210b25d6232ccf7b1b95ad2bd";
-// var token="427ac2cd8217032e75e00e57d42e1fc6";
-var token = "7d37573b9e465f676ecc233c4b72cbeb";
+ var token="427ac2cd8217032e75e00e57d42e1fc6";
+//var token = "7d37573b9e465f676ecc233c4b72cbeb";
 // var token ="d6519a7ba2b67b3593e7f2e54f80bc8f";
  (function ($) {
     $.getUrlParam = function (name) {
@@ -26,8 +27,7 @@ var token = "7d37573b9e465f676ecc233c4b72cbeb";
   if($.getUrlParam("token")!=null){
     token = $.getUrlParam("token");
   }
-var chatDate=["1"];
-
+var chatDate=[];
 export default {
   name: 'app',
   data () {
@@ -97,7 +97,7 @@ export default {
         this.fMess.push(evt.data);
         this.fMess1.push(evt.data);
         this.mesNum++
-      }
+      }[]
       console.log(evt.data);
       console.log(this.addFmes);
       console.log(this.fMess);
@@ -195,8 +195,12 @@ export default {
 #bottom .item{
     flex: 1;
 }
-#bottom .item:hover{
-    background: #eeeeee;
+#bottom .item span{
+  display: block;
+}
+#bottom .router-link-active{
+  display: block;
+  background: #eeeeee;
 }
 .abb{
   margin-bottom: 41px;
