@@ -12,9 +12,9 @@
 </template>
 <script>
  import $ from 'jquery'
-//var token = "00098635bd29551e6151a76edd395cec";
+var token = "00098635bd29551e6151a76edd395cec";
 //var token="d8786b5210b25d6232ccf7b1b95ad2bd";
- var token="427ac2cd8217032e75e00e57d42e1fc6";
+// var token="427ac2cd8217032e75e00e57d42e1fc6";
 //var token = "7d37573b9e465f676ecc233c4b72cbeb";
 // var token ="d6519a7ba2b67b3593e7f2e54f80bc8f";
  (function ($) {

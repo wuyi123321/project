@@ -12,9 +12,6 @@
       <div class="basemessage">
         <div class="c_title">基本信息</div>
         <ul @click="mesShowBase">
-          <!--<li>-->
-            <!--<i class="icon-tablet"><span>{{myMessage.tel}}</span></i>-->
-          <!--</li>-->
           <li>
             <i class="icon-user"><span>{{myMessage.gender==0?"女":"男"}}</span><span>{{myMessage.education}}</span><span>{{myMessage.height}}cm</span><span>{{myMessage.area}}</span></i>
           </li>
@@ -258,9 +255,9 @@
             msg:msg
           }
           this.websocket.send(JSON.stringify(socketMsg));//调用后台handleTextMessage方法
-          alert("发送成功!");
+          this.$message({type: 'success', message: '申请消息已经发出，等待对方回应'});
         } else {
-          alert("连接失败!");
+          this.$message({type: 'error', message: '申请消息发送失败'});
         }
 
     }
@@ -283,6 +280,8 @@
   }
 
   #person{
+    position: fixed;
+    top:0;
     clear: both;
     height: 100%;
     overflow: hidden;

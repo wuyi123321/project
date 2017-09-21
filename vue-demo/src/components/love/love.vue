@@ -12,6 +12,7 @@
   </div>
 </template>
 
+
 <script>
   import addItem from "@/components/love/addItem.vue";
   export default {
@@ -36,7 +37,6 @@
     },
     methods:{
       addShow:function () {//开始添加说说
-        console.log("aaaa");
         $("#addItem").animate({height:"100vh"},"fast")
       },
       remove_add:function () {//关闭添加
@@ -77,7 +77,6 @@
     background: #fff;
     z-index: 101;
   }
-
   #love #top .item{
     flex: 1;
   }

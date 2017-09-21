@@ -69,7 +69,7 @@
         <div class="c_title">爱情宣言</div>
         <p>{{myMessage.pLanguage}}</p>
       </div>
-      <div class="basemessage">
+      <div class="basemessage" style="border: none">
         <div class="c_title">照片墙</div>
         <div class="imgs">
           <div v-for="i in 3" class="imgItem">
@@ -571,8 +571,13 @@
     height: 100%;
     display: flex;
     align-items: center;
-    color: #fda7f7;
+    color: #ffe7ff;
     font-size: 0.4rem;
+  }
+  #me .photo .changeimg span{
+    padding: 2px;
+    border: solid 1px #aaa;
+    border-radius: 4px;
   }
   #me .photo .changeimg .addImg i{
     color: #999;
@@ -691,7 +696,6 @@
     align-items:center;
     margin-left: 0.3rem;
     border-bottom: solid 1px #fda7f7;
-    align-items: center;
   }
   #right .r_content .r_item .item_name{
     width: 1rem;

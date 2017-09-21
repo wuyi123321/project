@@ -124,7 +124,6 @@
           formData.append('message',this.addContent);
           formData.append('userNo',this.userNo);
           formData.append('token',this.token);
-          console.log(this.userNo+this.imgsrcs+this.addContent+this.addType+this.token)
           $.ajax({
             type:"post",
             url:"http://appinter.sunwoda.com/common/LoveTheSkyUser/makeStatement.json",
@@ -134,8 +133,8 @@
             processData:false,
             mimeType:"multipart/form-data",
             success:function(data){
-              console.log(data);
-              var a=JSON.parse(data)
+              var a=JSON.parse(data);
+              console.log(a);
               $("#blackBg3").css("display","none");
               vm.$emit('close');
               $("#addItem").animate({height:"0"},"fast")

@@ -88,12 +88,21 @@ export default {
     if(this.addFmes.length>0){
       this.badgehid=false;
     }
-    var vm = this;
-    var href="http://appinter.sunwoda.com/common/lsfriend/friendInfo.json";
+    let vm = this;
+    let href="http://appinter.sunwoda.com/common/lsfriend/friendInfo.json";
     vm.$http.get(href+"?token="+this.token+"&userNo="+this.userNo
     ).then((response) => {
       console.log(response);
-      vm.friList=response.data.dataInfo.listData;
+      if(response.data.dataInfo!=null){
+        vm.friList=response.data.dataInfo.listData;
+        if(vm.friList.length===0){
+          this.$message("您还没有好友，快去添加好友吧!");
+        }
+
+      }else {
+        this.$message( {type: 'error',message: '获取好友列表失败'});
+      }
+
     }, (response) => {
       console.log('error');
     });
