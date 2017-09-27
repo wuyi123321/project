@@ -27,7 +27,7 @@
                     <div style="padding: 10px">
                       <div style="padding-bottom: 5px;font-size: 0.25rem" >添加回复</div>
                       <el-input type="textarea" placeholder="期待您的神回复" v-model="replay"></el-input>
-                      <div class="submessage" @click="submessage(n,m,item.userName)" v-bind:id="item.pMessageId" v-bind:fId="item.replyId">确定</div></div>
+                      <div class="submessage" @click="submessage(item.pMessageId,item.replyId,n,m,item.userName)">确定</div></div>
                     <i class="icon-comment"  slot="reference"></i>
                   </el-popover></i>
                   <i class="icon-minus-sign" @click="deleteMyreply(item.replyId,mess.messageId,n,m,'al')" v-if="item.pUSerNo==userNo"></i>
@@ -46,7 +46,7 @@
                     <div style="padding: 10px">
                       <div style="padding-bottom: 5px;font-size: 0.25rem" >添加回复</div>
                       <el-input type="textarea" placeholder="期待您的神回复" v-model="replay"></el-input>
-                      <div class="submessage" @click="submessage(n,m,item.userName)" v-bind:id="item.pMessageId" v-bind:fId="item.replyId">确定</div></div>
+                      <div class="submessage" @click="submessage(item.pMessageId,item.replyId,n,m,item.userName)">确定</div></div>
                     <i class="icon-comment"  slot="reference"></i>
                   </el-popover></i>
                   <i class="icon-minus-sign" @click="deleteMyreply(item.replyId,mess.messageId,n,m,s)" v-if="item.pUSerNo==userNo"></i>
@@ -66,7 +66,7 @@
             <div style="padding: 10px">
               <div style="padding-bottom: 5px;font-size: 0.25rem" >添加回复</div>
               <el-input type="textarea" placeholder="期待您的神回复" v-model="replay"></el-input>
-              <div class="submessage" @click="submessage(n,'bl','no')" v-bind:id="mess.messageId" v-bind:fId="0">确定</div>
+              <div class="submessage" @click="submessage(mess.messageId,0,n,'bl','no')">确定</div>
             </div>
             <i class="icon-comment"  slot="reference"></i>
           </el-popover>
@@ -186,9 +186,11 @@
 
       },
       //评论
-      submessage:function (n,m,fname) {//n:一级回复的第几条；m:二级回复的第几条；fname:回复的人姓名
-        let totolkId=event.target.getAttribute("id");
-        let fId=event.target.getAttribute("fId");
+      submessage:function (tolkid,fid,n,m,fname) {//n:一级回复的第几条；m:二级回复的第几条；fname:回复的人姓名
+        let totolkId=tolkid;
+//          event.target.getAttribute("id");
+        let fId=fid;
+          event.target.getAttribute("fId");
         console.log(totolkId+"asajks"+fId);
         console.log(n);
         console.log(m);

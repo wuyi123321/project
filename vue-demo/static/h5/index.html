@@ -143,7 +143,12 @@
 <script src="../comjs/vue@2.4.js"></script>
 <script src="../comjs/elejs.js"></script>
 <script>
-  var token="374f6675e70cb1a9a7c4a111f67cb9c0";
+  function getQueryString(name) {
+    var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+    var r = window.location.search.substr(1).match(reg);
+    if (r != null) return unescape(r[2]); return null;
+  }
+  var token = getQueryString("token");
   function getFileUrl(inputid,i) {
     console.log(document.getElementById(inputid).files[i]);
     var url;

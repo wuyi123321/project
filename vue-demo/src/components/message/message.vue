@@ -39,7 +39,7 @@
           placement="left"
           width="220"
           trigger="click">
-          <div>
+          <div style="padding: 10px">
           <div style="padding-bottom: 5px">好友请求</div>
            <div v-for="(i,index) in addFmesC" class="add_item">
                  {{JSON.parse(i).userNo}}
