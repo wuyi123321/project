@@ -3,17 +3,22 @@
     <div class="content">
       <div class="item" v-for="(mess,n) in tleTolk">
         <div class="it_top">
-          <div class="it_img" ><img @click="showPeople" v-bind:id="mess.userNo" v-bind:src="'http://appinter.sunwoda.com'+mess.photo" width="30" height="30"/></div>
+          <div class="it_img" ><img @click="showPeople" v-bind:id="mess.userNo" v-bind:src="'http://appinter.sunwoda.com'+mess.photo.replace('.','thumbnail.')" width="30" height="30"/></div>
           <div class="name">{{mess.userName}}<i class="icon-minus-sign" @click="deleteMytolk(mess.messageId,n)" v-if="mess.userNo==userNo"></i></div>
         </div>
         <div class="it_content">
+          <!--说说类型和内容显示-->
           <p><span @click="getTp">{{mess.type}}</span>{{mess.message}}</p>
+
+          <!--说说图片展示1504504645646thumbnail.jpg-->
           <div class="showImgs">
             <div class="imgItem" v-for="i in mess.pPath==null?[]:mess.pPath.split(';')" v-if="i !=''">
-              <img v-bind:src="'http://appinter.sunwoda.com'+i" @click="clickImg($event)"/>
+              <img v-bind:src="'http://appinter.sunwoda.com'+i.replace('.','thumbnail.') " @click="clickImg(i)"/>
             </div>
           </div>
         </div>
+
+        <!--说说的评论展示和次级回复展示并添加回复功能-->
         <el-collapse accordion>
           <el-collapse-item v-for="(item,m) in mess.listReply" class="it_message" :key="item.fId">
             <template slot="title">
@@ -56,13 +61,17 @@
             </div>
           </el-collapse-item>
         </el-collapse>
+
+
+
+        <!--对说说的点赞和回复-->
         <div class="it_bottom">
           <i class="icon-thumbs-up" @click="total"  v-bind:id="mess.messageId"><span>{{mess.total}}</span></i>
           <i class="icon-thumbs-down" @click="dTotal"  v-bind:id="mess.messageId"><span>{{mess.dTotal}}</span></i>
           <i><el-popover
-            placement="bottom"
-            width="250"
-            trigger="click">
+              placement="bottom"
+              width="250"
+              trigger="click">
             <div style="padding: 10px">
               <div style="padding-bottom: 5px;font-size: 0.25rem" >添加回复</div>
               <el-input type="textarea" placeholder="期待您的神回复" v-model="replay"></el-input>
@@ -80,7 +89,6 @@
 
 
 <script>
-
   export default {
     name: 'hello',
     props:{
@@ -163,9 +171,10 @@
         });
 
       },
-      clickImg(e) {
+      clickImg(img) {
         // 获取当前图片地址
-       let imgsrc = e.currentTarget.src;
+
+       let imgsrc = "http://appinter.sunwoda.com"+img;
         console.log(imgsrc)
        this.$emit("bigImg",imgsrc);
 

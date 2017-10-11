@@ -17,7 +17,7 @@
           <li v-for="item in peopleListin.listData" >
             <div class="img_item">
               <div class="img_show" @click="showPeople">
-                <img  v-bind:src="'http://appinter.sunwoda.com'+item.photo" v-bind:id="item.userNo"/>
+                <img  v-bind:src="'http://appinter.sunwoda.com'+item.photo.replace('.','thumbnail.')" v-bind:id="item.userNo"/>
               </div>
               <div class="img_bottom">
                 <span>{{item.area}}</span>
@@ -35,7 +35,7 @@
           <li v-for="item in vipListin.listData" class="list_item">
             <div class="img_item">
               <div class="img_show" @click="showPeople">
-                <img v-bind:src="'http://appinter.sunwoda.com'+item.photo" v-bind:id="item.userNo"/>
+                <img v-bind:src="'http://appinter.sunwoda.com'+item.photo.replace('.','thumbnail.')" v-bind:id="item.userNo"/>
               </div>
               <div class="person_message">
                 <table>

@@ -127,7 +127,7 @@
 </div>
   <div id="smallimages"  @click="det"></div>
   <div class="addphoto" v-show="addimage"><input type="file" accept="image/*" capture="camera"  id="inputfile" @change="preImg()" ><i class="el-icon-plus"></i></div>
-<div class="submit"><el-button @click="submit">开始结缘</el-button></div>
+<div class="submit"><el-button @click="submit">开始结缘</el-button><a :href="'../../index.html?token='+token">去主页</a></div>
   <div id="blackBg2" v-show="show" @click="close">
   </div>
   <div id="blackBg3" style="display:none;width: 100%;height: 100%;background: rgba(0,0,0,0.6);position: fixed;
@@ -193,6 +193,7 @@
         sex:"",
         tel:"",
         userName:"",
+        token:token,
         userNo:"",
         birthday:"",
         monthlyIncome:"",

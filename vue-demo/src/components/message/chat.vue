@@ -167,7 +167,7 @@
       onClose:function() {},
       doSendfunction () {//发消息
         var vm =this;
-        if($('.lt_inp').val()!=''){
+        if($('.lt_inp').val().trim()!=''){
           if (vm.websocket.readyState == (vm.websocket.OPEN==undefined?1:vm.websocket.OPEN)) {
             var socketMsg={
               status:"1",
