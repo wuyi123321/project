@@ -1,17 +1,15 @@
 <template>
   <div id="messageContent">
     <div class="title">
-      <i class="icon-angle-left item" @click="closeSend"></i>
-      <div class="item"></div>
-      <div class="item"></div>
+      <i class="icon-angle-left first-child" @click="closeSend"></i>
       <div class="item">{{name}}</div>
-      <div class="item"></div>
-      <div class="item"></div>
+      <div class="last-child">
       <el-popover
         ref="topik"
         placement="bottom"
-        width="50"
+        width="70"
         visible-arrow="false"
+        style="min-width: 70px; padding: 0;"
      >
       <div style="width: 70px;color: #555">
          <ul >
@@ -23,6 +21,7 @@
 
       </el-popover>
       <i class="icon-user item"  v-popover:topik></i>
+      </div>
     </div>
     <div class="lt_zong" id="centre">
       <p class="lt_df lt_df1" v-if="admin">
@@ -130,6 +129,7 @@
          }
           }
     },
+
       onMessage:function (evt) {
         var vm = this;
         if(evt.data != "连接成功" && JSON.parse(evt.data)["status"]==2){//添加好友的消息接受
@@ -163,10 +163,14 @@
         console.log(evt.data);
         console.log(this.mEss);
       },
+
+
       onError:function()  {},
       onClose:function() {},
       doSendfunction () {//发消息
         var vm =this;
+
+
         if($('.lt_inp').val().trim()!=''){
           if (vm.websocket.readyState == (vm.websocket.OPEN==undefined?1:vm.websocket.OPEN)) {
             var socketMsg={
@@ -228,8 +232,8 @@
     width: 100%;
     font-size: 0.3rem;
     height: 100%;
-    background: #e4e8f1 ;
-  }
+    background: #e4e8f1 }
+
   #messageContent .title{
     display: flex;
     height: 5%;
@@ -240,11 +244,17 @@
     background: #ffffff;
     justify-content: center;
   }
-  #messageContent .title:first-child{
-   text-align: left;
+  #messageContent .title .first-child{
+    margin-left: 10px;
+    width: 50px;
+    display: flex;
+    justify-content: flex-start;
   }
-  #messageContent .title:last-child{
-   text-align: right;
+  #messageContent .title .last-child{
+    margin-right: 10px;
+    width: 50px;
+    display: flex;
+    justify-content: flex-end;
   }
   #messageContent .title .item{
     display: inline-block;

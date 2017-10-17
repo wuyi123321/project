@@ -90,8 +90,22 @@
     border-radius: 4px;
     color: #fff;
   }
+
+
   #love #top .item:hover{
     color: #fda7f7;
+  }
+  .el-message-box {
+    text-align: left;
+    display: inline-block;
+    vertical-align: middle;
+    background-color: #fff;
+    width: 0;
+    border-radius: 3px;
+    font-size: 16px;
+    overflow: hidden;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
   }
 
 </style>

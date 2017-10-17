@@ -2,7 +2,7 @@
   <div class="block">
     <el-carousel height="150px" width = "100%">
       <el-carousel-item v-for="item in activeImg" :key="item">
-        <img src="../../assets/2.jpg" height="150px" width = "100%"/>
+        <img src="../../../static/images/2.jpg" height="150px" width = "100%"/>
       </el-carousel-item>
     </el-carousel>
     <div id="nav">
@@ -41,23 +41,23 @@
                 <table>
                   <tr >
                     <td style="border: none">姓名</td>
-                    <td style="border: none">{{item.username}}<a href="../../../static/h5/index.html">注册</a></td>
+                    <td style="border: none">{{item.username}}</td>
                   </tr>
                   <tr>
                     <td>身高</td>
                     <td>{{item.height}}</td>
                   </tr>
                   <tr>
-                    <td>电话</td>
-                    <td>{{item.tel}}</td>
+                    <td>生日</td>
+                    <td>{{new Date(item.birthday).getFullYear()}}年{{new Date(item.birthday).getMonth()+1}}月{{new Date(item.birthday).getDay()}}日</td>
                   </tr>
                   <tr>
                     <td>籍贯</td>
                     <td>{{item.area}}</td>
                   </tr>
                   <tr>
-                    <td>部门</td>
-                    <td>{{item.department}}</td>
+                    <td>学历</td>
+                    <td>{{item.education}}</td>
                   </tr>
                 </table>
               </div>
@@ -73,7 +73,7 @@
           <li class="list_item">
             <div class="img_item">
               <div class="img_show" >
-                <a href="http://mp.weixin.qq.com/s/oNME5Zj3TfJcciylsbleHg"><img src="../../assets/active.png" /></a>
+                <a href="http://mp.weixin.qq.com/s/oNME5Zj3TfJcciylsbleHg"><img src="../../../static/images/active.png" /></a>
               </div>
               <div class="person_message">
                 <table>
@@ -129,11 +129,15 @@
     },
     created: function(){
       this.peopleListin=this.peopleList;
+      console.log(this.peopleListin.listData);
       this.vipListin = this.vipList;
       this.type=this.lType[0];
+      this.getACtive();
       console.log(this.vipList);
     },
     methods:{
+
+
       getPeopleMemessage(userNO){
         let vm = this;
         vm.$http.get('http://appinter.sunwoda.com/common/LoveTheSkyUser/findLoveTheSkyUser.json?userNo='+userNO+'&token='+this.token).then((response) => {
@@ -146,7 +150,9 @@
         var perNo=event.target.getAttribute("id");
         console.log(perNo);
         this.getPeopleMemessage(perNo);
-        $("#person").animate({width:"100vw"},"fast")
+        $("#person").css("z-index","999");
+        $("#person").animate({width:"100vw"},"fast");
+
       },
       show_type:function (event) {
         this.type=event.target.innerHTML;
@@ -168,6 +174,18 @@
           console.log('error');
         });
       },
+      getACtive:function () {
+        var vm=this;
+        var href="http://appinter.sunwoda.com/common/LoveTheSkyUser/findActivity.json";
+        vm.$http.get(href+"?token="+this.token+"&userNo="+this.userNo+"&pageSize="+3+"&page=1"
+        ).then((response) => {
+          console.log(response);
+
+        }, (response) => {
+          console.log('error');
+        });
+      },
+
       //获取推荐用户的数据
       getvip:function () {
         this.flag1++;
@@ -183,30 +201,7 @@
       }
 
     },
-    onOpen: function(openEvt) {
-      console.log(openEvt);
-    },
 
-    onMessage:function (evt) {
-      alert(evt.data);
-
-    },
-    onError:function()  {},
-    onClose:function() {},
-
-    doSendfunction (status,uNo,msg) {
-      if (websocket.readyState == (websocket.OPEN==undefined?1:websocket.OPEN)) {
-        var socketMsg={
-          status:status,
-          userNo:uNo,//要发送消息的用户的userId,ALL为发送给所有人
-          msg:msg
-        }
-        websocket.send(JSON.stringify(socketMsg));//调用后台handleTextMessage方法
-        alert("发送成功!");
-      } else {
-        alert("连接失败!");
-      }
-    },
     components: {
       person,
     }
@@ -215,13 +210,17 @@
 <style>
   .block #person{
     width: 0;
-    position: fixed;;
+    position: fixed;
     top:0;
     background: #fff;
+    z-index:-1;
   }
   .block{
+
+    background: #fff;
     width: 100%;
     height: 100%;
+    min-height: 100vh;
 
   }
   #nav{
@@ -249,6 +248,7 @@
   }
   .body .title{
     margin-top: 0.2rem;
+    margin-left: 10px;
     font-size: 0.25rem;
     color: #fda7f7;
   }

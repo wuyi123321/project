@@ -206,7 +206,7 @@
         maritalStatusselect:["已婚","未婚"],
         lTypes:"",
         litnum:3,
-        lTypesselect:["女神系列","活泼可爱","工作达人","温文尔雅","心灵手巧"],
+        lTypesselect:["善解人意","活波开朗","甜美清新","工作达人","知性女神"],
         pLanguage:""
       }
     },
@@ -282,7 +282,7 @@
             processData: false,
             mimeType: "multipart/form-data",
             success: function (data) {
-              var a = JSON.parse(data)
+              var a = JSON.parse(data);
               $("#blackBg3").css("display", "none");
               console.log(a["statusCode"]);
               if (a["statusCode"] == 0) {

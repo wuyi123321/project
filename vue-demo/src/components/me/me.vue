@@ -76,9 +76,6 @@
             <img v-bind:src="'http://appinter.sunwoda.com'+myMessage.photo"/>
           </div>
         </div>
-        <div class="right">
-          <i class="icon-angle-right"  @click="mesShowLove" ></i>
-        </div>
       </div>
     </div>
     <div id="right">
@@ -642,6 +639,7 @@
   }
   #me #left .c_title{
     padding-top:0.1rem;
+    margin-left: 0.1rem;
     padding-bottom:0.1rem;
     color: #4db3ff;
     font-size: 0.25rem;
@@ -650,7 +648,7 @@
     position: absolute;
     height: 100%;
     top: 0;
-    right: 5px;
+    right:10px;
     display: flex;
     align-items: center;
   }

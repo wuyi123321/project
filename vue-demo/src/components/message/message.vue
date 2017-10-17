@@ -37,10 +37,10 @@
         <el-popover
           ref="popover1"
           placement="left"
-          width="220"
-          trigger="click">
+          width="220">
           <div style="padding: 10px">
-          <div style="padding-bottom: 5px">好友请求</div>
+          <div style="padding-bottom: 5px;">好友请求</div>
+
            <div v-for="(i,index) in addFmesC" class="add_item">
                  {{JSON.parse(i).userNo}}
                  {{JSON.parse(i).msg}}
@@ -54,6 +54,8 @@
          </div>
       </div>
 </template>
+
+
 
 <script>
 export default {
@@ -221,7 +223,12 @@ export default {
   background:#afddff ;
   border: 1px solid #afddff;
   font-size: 0.01rem;
+  z-index: 990;
 }
+.el-popover{
+  min-width: 50px;
+}
+
 
 .el-popover .add_item{
 
@@ -240,6 +247,8 @@ export default {
   height: 25px;
   line-height: 25px;
 }
+
+
 #message ul li{
   z-index: 100;
 }

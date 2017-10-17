@@ -143,16 +143,17 @@ export default {
 }
 .yo-scroll .inner {
   position: absolute;
-  top: -0.5rem;
+  top: -40px;
   width: 100%;
   transition-duration: 300ms;
 }
+
 .yo-scroll .pull-refresh {
   position: relative;
   left: 0;
   top: 0;
   width: 100%;
-  height: 0.5rem;
+  height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;

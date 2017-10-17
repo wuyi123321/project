@@ -34,7 +34,7 @@ export default {
       myMessage:{},
       peopleList:{},
       vipList:{},
-      lType:["女神系列","活泼可爱","工作达人","温文尔雅","心灵手巧"],
+      lType:["善解人意","活波开朗","甜美清新","工作达人","知性女神"],
       websocket:null,
       addFmes:[],
       fMess:[],
@@ -54,7 +54,8 @@ export default {
 //判断是否注册
       vm.$http.get('http://appinter.sunwoda.com/common/LoveTheSkyUser/loveTheSkyUser.json?token='+vm.token).then((response) => {
         console.log(response);
-        if(response.data.statusCode==0){//注册完成的用户
+
+        if(parseInt(response.data.statusCode)==0){//注册完成的用户
           vm.userNo=response.data.message;
           vm.getMemessage(response.data.message);  //获取个人属性
           vm.getList(response.data.message);//获取主页信息
@@ -75,7 +76,8 @@ export default {
           vm.websocket.onmessage =this.onMessage;
           vm.websocket.onerror = this.onError;
           vm.websocket.onclose = this.onClose;
-        }else if( response.data.statusCode==41066 ) {//禁用的用户
+        }
+        else if(parseInt(response.data.statusCode)==41066 ) {//禁用的用户
           this.bgloading=true;
           console.log( $("#jinyong"));
           vm.$notify({
@@ -145,7 +147,7 @@ export default {
           vm.myMessage=response.data.dataInfo.listData[0];
           this.bgloading=false;
           if( vm.myMessage.gender==0){
-            vm.lType=["冷酷幽默","阳光少年","热心勇敢","智慧过人","冷静稳重"];
+            vm.lType=["阳光帅气","成熟稳重","幽默风趣","运动达人","文艺青年"];
           }
         }else {
           this.$message({type: 'error', message: '信息获取失败，重新进入'});
