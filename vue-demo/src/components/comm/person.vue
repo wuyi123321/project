@@ -43,9 +43,6 @@
             <div class="ful_key">学历</div><div class="ful_value">{{myMessage.tEducation}}</div>
           </div>
           <div class="fullMes">
-            <div class="ful_key">月收入</div><div class="ful_value">{{myMessage.tMonthlyIncome}}</div>
-          </div>
-          <div class="fullMes">
             <div class="ful_key">性格</div><div class="ful_value">{{myMessage.tTypes}}</div>
           </div>
         </div>
@@ -191,10 +188,6 @@
           "           <div class='r_item'>" +
           "             <div class='item_name'>居住地</div>" +
           "             <div class='item_value'>"+this.myMessage.tArea+"</div>" +
-          "           </div>" +
-          "           <div class='r_item'>" +
-          "             <div class='item_name'>月收入</div>" +
-          "             <div class='item_value'>"+this.myMessage.tMonthlyIncome+"</div>" +
           "           </div>" +
           "           <div class='r_item'>" +
           "             <div class='item_name'>购房情况</div>" +

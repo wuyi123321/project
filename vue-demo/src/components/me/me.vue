@@ -17,7 +17,7 @@
         <div class="c_title">基本信息</div>
         <ul @click="mesShowBase">
           <li>
-            <i class="icon-calendar"><span>{{new Date(myMessage.birthday).getFullYear()}}年{{new Date(myMessage.birthday).getMonth()+1}}月{{new Date(myMessage.birthday).getDay()}}日</span></i>
+            <i class="icon-calendar"><span>{{new Date(myMessage.birthday).getFullYear()}}年{{new Date(myMessage.birthday).getMonth()+1}}月{{new Date(myMessage.birthday).getDate()}}日</span></i>
           </li>
           <li>
             <i class="icon-user"><span>{{myMessage.gender==0?"女":"男"}}</span><span>{{myMessage.education}}</span><span>{{myMessage.height}}cm</span><span>{{myMessage.area}}</span></i>
@@ -54,9 +54,9 @@
             <div class="ful_key">年龄</div><div class="ful_value">{{myMessage.tYear}}</div>
             <div class="ful_key">学历</div><div class="ful_value">{{myMessage.tEducation}}</div>
           </div>
-          <div class="fullMes">
-            <div class="ful_key">月收入</div><div class="ful_value">{{myMessage.tMonthlyIncome}}</div>
-          </div>
+          <!--<div class="fullMes">-->
+            <!--<div class="ful_key">月收入</div><div class="ful_value">{{myMessage.tMonthlyIncome}}</div>-->
+          <!--</div>-->
           <div class="fullMes">
             <div class="ful_key">性格</div><div class="ful_value">{{myMessage.tTypes}}</div>
           </div>
@@ -128,23 +128,79 @@
         $("#changeImg")[0].style.display="none";
         }
       },
+      getFileUrl:function(inputid,i) {
+        console.log(document.getElementById(inputid).files[i]);
+        var url;
+        if (navigator.userAgent.indexOf("MSIE")>=1) { // IE
+          url = document.getElementById("inputfile").value;
+        } else if(navigator.userAgent.indexOf("Firefox")>0) { // Firefox
+          url = window.URL.createObjectURL(document.getElementById(inputid).files.item(i));
+        } else if(navigator.userAgent.indexOf("Chrome")>0) { // Chrome
+          url = window.URL.createObjectURL(document.getElementById(inputid).files.item(i));
+        }else {
+          url = window.webkitURL.createObjectURL(document.getElementById(inputid).files[i]);
+        }
+        return url;
+      },
+      dealImage: function (path, obj, callback) {
+        var img = new Image();
+        img.src = path;
+        img.onload = function () {
+          var that = this;
+          // 默认按比例压缩
+          var w = that.width,
+            h = that.height,
+            scale = w / h;
+          w = obj.width || w;
+          h = obj.height || (w / scale);
+          var quality = 1;  // 默认图片质量为0.7
+          //生成canvas
+          var canvas = document.createElement('canvas');
+          var ctx = canvas.getContext('2d');
+          // 创建属性节点
+          var anw = document.createAttribute("width");
+          anw.nodeValue = w;
+          var anh = document.createAttribute("height");
+          anh.nodeValue = h;
+          canvas.setAttributeNode(anw);
+          canvas.setAttributeNode(anh);
+          ctx.drawImage(that, 0, 0, w, h);
+          // 图像质量
+          if (obj.quality && obj.quality <= 1 && obj.quality > 0) {
+            quality = obj.quality;
+          }
+          // quality值越小，所绘制出的图像越模糊
+          var base64 = canvas.toDataURL('image/jpeg', quality);
+          // 回调函数返回base64的值
+          callback(base64);
+        }
+      },
+      convertBase64UrlToBlob: function (urlData) {
+
+        var bytes = window.atob(urlData.split(',')[1]);        //去掉url的头，并转换为byte
+
+        //处理异常,将ascii码小于0的转换为大于0
+        var ab = new ArrayBuffer(bytes.length);
+        var ia = new Uint8Array(ab);
+        for (var i = 0; i < bytes.length; i++) {
+          ia[i] = bytes.charCodeAt(i);
+        }
+
+        return new Blob([ab], {type: 'image/png'});
+      },
       //input改变时往页面显示选中图像事件
       showImg:function () {
-        this.imgsrcs.push(document.getElementById("inputfile").files[0]);//获取表单文件往imgsrcs里加
-        var src = "";
-        if (navigator.userAgent.indexOf("MSIE")>=1) { // IE
-          src = document.getElementById("inputfile").value;
-        } else if(navigator.userAgent.indexOf("Firefox")>0) { // Firefox
-          src = window.URL.createObjectURL(document.getElementById("inputfile").files.item(0));
-        } else if(navigator.userAgent.indexOf("Chrome")>0) { // Chrome
-          src = window.URL.createObjectURL(document.getElementById("inputfile").files.item(0));
-        }else {
-          src = window.webkitURL.createObjectURL(document.getElementById("inputfile").files[0]);
-        }
-        $("#smallimages").append("<div class='cream'>" +
-          "<img width='19px' height='19px' src='static/images/ic_delete.png' class='delete'>" +
-          "<img class='smallimg' width='100%' height='100%' src='" + src + "'> </div>");
-        console.log(this.imgsrcs);
+        var vm=this;
+        var src='';
+        vm.dealImage(vm.getFileUrl("inputfile", 0), {width: 200}, function (base) {
+//直接将获取到的base64的字符串，放到一个image标签中就可看到测试后的压缩之后的样式图了
+            console.log(vm.convertBase64UrlToBlob(base));
+            vm.imgsrcs.push(vm.convertBase64UrlToBlob(base));
+            src=base;
+          $("#smallimages").append("<div class='cream'>" +
+            "<img width='19px' height='19px' src='static/images/ic_delete.png' class='delete'>" +
+            "<img class='smallimg' width='100%' height='100%' src='" + src + "'> </div>");
+        });
         this.addImg = false;
         this.subImg=true;
       },
@@ -159,6 +215,8 @@
           console.log("Aaa");
         }
       },
+
+
       //确定更改图像事件
       submitImg:function () {
         var vm=this;
@@ -200,6 +258,18 @@
         var osex;
         var sex1;
         var sex2;
+        var year=new Date(vm.myMessage.birthday).getFullYear();
+        var month=(new Date(this.myMessage.birthday).getMonth()+1);
+        var day=new Date(this.myMessage.birthday).getDate();
+        if(month<10){
+          month="0"+month
+        }
+        if(day<10){
+          day="0"+day
+        }
+           console.log(new Date(vm.myMessage.birthday))
+        var br=year +"-"+month+"-"+day
+        console.log(br);
         if(this.myMessage.gender==0){
           sex="女";
           osex="男";
@@ -215,7 +285,7 @@
           "         <div class='r_content'><form name='bform'>" +
           "           <div class='r_item' >" +
           "             <div class='item_name'>生日</div>" +
-          "             <div class='item_value'><input type='date' placeholder='请填写生日' value="+'2017-05-04'+"></input></div>" +
+          "             <div class='item_value'><input type='date' placeholder='请填写生日' value="+br+"></input></div>" +
           "           </div>" +
           "           <div class='r_item'>" +
           "             <div class='item_name'>昵称</div>" +
@@ -243,14 +313,14 @@
           "                  <option value='研究生'>研究生</option><option value='博士'>博士</option><option value='博士以上'>博士以上</option>" +
           "           </select></div>" +
           "           </div>"+
-          "           <div class='r_item'>" +
-          "             <div class='item_name'>月收入</div>" +
-          "             <div class='item_value'><select>" +
-          "                  <option value='"+this.myMessage.monthlyIncome+"' selected hidden>"+this.myMessage.monthlyIncome+"</option>"+
-          "                  <option value='3000以下'>3000以下</option><option value='3000-5000'>3000-5000</option><option value='5000-8000'>5000-8000</option>" +
-          "                  <option value='8000-10000'>8000-10000</option><option value='10000以上'>10000以上</option>" +
-          "           </select></div>" +
-          "           </div>" +
+//          "           <div class='r_item'>" +
+//          "             <div class='item_name'>月收入</div>" +
+//          "             <div class='item_value'><select>" +
+//          "                  <option value='"+this.myMessage.monthlyIncome+"' selected hidden>"+this.myMessage.monthlyIncome+"</option>"+
+//          "                  <option value='3000以下'>3000以下</option><option value='3000-5000'>3000-5000</option><option value='5000-8000'>5000-8000</option>" +
+//          "                  <option value='8000-10000'>8000-10000</option><option value='10000以上'>10000以上</option>" +
+//          "           </select></div>" +
+//          "           </div>" +
           "         </div></form>"+" <div class='queding' id='submit'>" +
           "           提交" +
           "         </div>";
@@ -262,11 +332,17 @@
           var height=document.forms["bform"][3].value;
           var gender=document.forms["bform"][4].value;
           var education=document.forms["bform"][5].value;
-          var monthlyIncome=document.forms["bform"][6].value;
+//          var monthlyIncome=document.forms["bform"][6].value;
+          if(name==""){
+            vm.$message('昵称不能为空');
+          }else {
           console.log(birthday);
+          var bri=birthday.split("-");
+          var da=new Date(bri[0],parseInt(bri[1])-1,bri[2]).getTime()
+          console.log(da);
           var href="http://appinter.sunwoda.com/common/LoveTheSkyUser/updateLoveUserByUserNo.json";
           vm.$http.get(href+"?token="+vm.token+"&userNo="+vm.userNo+"&username="+name+"&gender="+gender+
-                             "&height="+height+"&education="+education+"&monthlyIncome="+monthlyIncome+"&area="+area
+                             "&height="+height+"&education="+education+"&monthlyIncome=&area="+area+"&birthdayStr="+birthday
           ).then((response) => {
             console.log(response);
             if(response.data.message=="操作成功"){
@@ -276,7 +352,8 @@
               vm.myMessage.height=height;
               vm.myMessage.gender=gender;
               vm.myMessage.education=education;
-              vm.myMessage.monthlyIncome=monthlyIncome;
+              vm.myMessage.monthlyIncome="";
+              vm.myMessage.birthday=da;
               vm.$message('修改成功');
             }else {
               vm.$message(response.data.message);
@@ -284,6 +361,7 @@
           }, (response) => {
             console.log('error');
           });
+          }
         });
       },
       mesShowAll:function () {
@@ -397,13 +475,13 @@
           "             <div class='item_name'>居住地</div>" +
           "             <div class='item_value'><input placeholder='请填写择偶居住地' value="+this.myMessage.tArea+"></input></div>" +
           "           </div>" +
-          "           <div class='r_item'>" +
-          "             <div class='item_name'>月收入</div>" +
-          "             <div class='item_value'><select>" +
-          "                  <option value='3000以下'>3000以下</option><option value='3000-5000'>3000-5000</option><option value='5000-8000' selected>5000-8000</option>" +
-          "                  <option value='8000-10000'>8000-10000</option><option value='10000以上'>10000以上</option>" +
-          "           </select></div>" +
-          "           </div>" +
+//          "           <div class='r_item'>" +
+//          "             <div class='item_name'>月收入</div>" +
+//          "             <div class='item_value'><select>" +
+//          "                  <option value='3000以下'>3000以下</option><option value='3000-5000'>3000-5000</option><option value='5000-8000' selected>5000-8000</option>" +
+//          "                  <option value='8000-10000'>8000-10000</option><option value='10000以上'>10000以上</option>" +
+//          "           </select></div>" +
+//          "           </div>" +
           "           <div class='r_item'>" +
           "             <div class='item_name'>购房情况</div>" +
           "             <div class='item_value'><input placeholder='请填写择偶购房情况' value="+this.myMessage.tPurchaseSituation+"></input></div>" +
@@ -426,25 +504,29 @@
           var tYear = document.forms["tform"][1].value;
           var tTypes=document.forms["tform"][2].value;
           var tArea=document.forms["tform"][3].value;
-          var tMonthlyIncome=document.forms["tform"][4].value;
-          var tPurchaseSituation=document.forms["tform"][5].value;
-          var tCarSituation=document.forms["tform"][6].value;
+//          var tMonthlyIncome=document.forms["tform"][4].value;
+          var tPurchaseSituation=document.forms["tform"][4].value;
+          var tCarSituation=document.forms["tform"][5].value;
           var href="http://appinter.sunwoda.com/common/LoveTheSkyUser/updateLoveTheSkyUserByUserNo.json";
           vm.$http.get(href+"?token="+vm.token+"&userNo="+vm.userNo+"&tEducation="+tEducation+"&tYear="+tYear+
-            "&tTypes="+tTypes+"&tArea="+tArea+"&tMonthlyIncome="+tMonthlyIncome+"&tPurchaseSituation="+tPurchaseSituation+
+            "&tTypes="+tTypes+"&tArea="+tArea+"&tMonthlyIncome=&tPurchaseSituation="+tPurchaseSituation+
             "&tCarSituation="+tCarSituation
           ).then((response) => {
             console.log(response);
+
+
             if(response.data.message=="操作成功"){
               $("#right").animate({width:"0"},"slow");
               vm.myMessage.tEducation=tEducation;
               vm.myMessage.tYear=tYear;
               vm.myMessage.tTypes=tTypes;
               vm.myMessage.tArea=tArea;
-              vm.myMessage.tMonthlyIncome=tMonthlyIncome;
+              vm.myMessage.tMonthlyIncome="";
               vm.myMessage.tPurchaseSituation=tPurchaseSituation;
               vm.myMessage.tCarSituation=tCarSituation;
               vm.$message('修改成功');
+
+
             }else {
               vm.$message(response.data.message);
             }
@@ -706,14 +788,18 @@
     border: none;
 
   }
+
+
   input:hover {
     border: none;
   }
  #me input {
+   height:  0.5rem;
     border: none;
     background: #baf7fd;
   }
 #me  select{
+  height:  0.5rem;
   width: 80%;
    outline-color:#baf7fd;
     border: none;

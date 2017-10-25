@@ -47,10 +47,7 @@
                     <td>身高</td>
                     <td>{{item.height}}</td>
                   </tr>
-                  <tr>
-                    <td>生日</td>
-                    <td>{{new Date(item.birthday).getFullYear()}}年{{new Date(item.birthday).getMonth()+1}}月{{new Date(item.birthday).getDay()}}日</td>
-                  </tr>
+
                   <tr>
                     <td>籍贯</td>
                     <td>{{item.area}}</td>
@@ -58,6 +55,10 @@
                   <tr>
                     <td>学历</td>
                     <td>{{item.education}}</td>
+                  </tr>
+                  <tr>
+                    <td>生日</td>
+                    <td>{{new Date(item.birthday).getFullYear()}}年{{new Date(item.birthday).getMonth()+1}}月{{new Date(item.birthday).getDate()}}日</td>
                   </tr>
                 </table>
               </div>
@@ -70,28 +71,29 @@
       <div class="title">特色活动</div>
       <div class="content">
         <ul>
-          <li class="list_item">
+          <li class="list_item" v-for="item in  actives">
             <div class="img_item">
               <div class="img_show" >
-                <a href="http://mp.weixin.qq.com/s/oNME5Zj3TfJcciylsbleHg"><img src="../../../static/images/active.png" /></a>
+
+                <a :href="item.linked"><img :src="'http://appinter.sunwoda.com'+item.photo.replace('.','thumbnail.')" /></a>
               </div>
               <div class="person_message">
                 <table>
                   <tr >
                     <td style="border: none">主题</td>
-                    <td style="border: none">花开月正圆，我们约会吧</td>
+                    <td style="border: none">{{item.title}}</td>
                   </tr>
                   <tr >
                     <td>时间</td>
-                    <td>2017年9月23日</td>
+                    <td>{{new Date(item.bDate).getFullYear()}}年{{new Date(item.bDate).getMonth()+1}}月{{new Date(item.bDate).getDate()}}日</td>
                   </tr>
                   <tr>
                     <td>地点</td>
-                    <td>石岩（待定）</td>
+                    <td>{{item.place}}</td>
                   </tr>
                   <tr>
                     <td >内容</td>
-                    <td >假面联谊派对
+                    <td >{{item.context}}
                     </td>
                   </tr>
                 </table>
@@ -116,6 +118,10 @@
       token:String,
       userNo:String
     },
+
+
+
+
     data () {
       return {
         activeImg:["src/assets/1.jpg","src/assets/2.jpg","src/assets/3.jpg","../assets/4.jpg"],
@@ -124,7 +130,8 @@
         vipListin:{},
         flag:1,
         flag1:1,
-        peopleMessage:{}
+        peopleMessage:{},
+        actives:[]
       }
     },
     created: function(){
@@ -180,6 +187,7 @@
         vm.$http.get(href+"?token="+this.token+"&userNo="+this.userNo+"&pageSize="+3+"&page=1"
         ).then((response) => {
           console.log(response);
+          vm.actives=response.data.dataInfo.listData;
 
         }, (response) => {
           console.log('error');

@@ -156,6 +156,9 @@ body{
 
 }
 
+.submit a{
+color: #fda7f7;;
+}
 .personmessage .el-textarea__inner{
   height: 100%;
   border: none;

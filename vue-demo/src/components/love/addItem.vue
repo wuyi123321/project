@@ -76,7 +76,7 @@
     },
     methods:{
       remove_add:function () {
-        $("#addItem").animate({height:"0"},"fast")
+        $("#addItem").animate({height:"0"},"fast");
       },
       det:function (event) {//删除图片
         if(event.target.className=="delete"){
@@ -98,17 +98,70 @@
       close:function(){
         this.showImage=false;
       },
+
+
+      dealImage: function (path, obj, callback) {
+        var img = new Image();
+        img.src = path;
+        img.onload = function () {
+          var that = this;
+          // 默认按比例压缩
+          var w = that.width,
+            h = that.height,
+            scale = w / h;
+          w = obj.width || w;
+          h = obj.height || (w / scale);
+          var quality = 1;  // 默认图片质量为0.7
+          //生成canvas
+          var canvas = document.createElement('canvas');
+          var ctx = canvas.getContext('2d');
+          // 创建属性节点
+          var anw = document.createAttribute("width");
+          anw.nodeValue = w;
+          var anh = document.createAttribute("height");
+          anh.nodeValue = h;
+          canvas.setAttributeNode(anw);
+          canvas.setAttributeNode(anh);
+          ctx.drawImage(that, 0, 0, w, h);
+          // 图像质量
+          if (obj.quality && obj.quality <= 1 && obj.quality > 0) {
+            quality = obj.quality;
+          }
+          // quality值越小，所绘制出的图像越模糊
+          var base64 = canvas.toDataURL('image/jpeg', quality);
+          // 回调函数返回base64的值
+          callback(base64);
+        }
+      },
+      convertBase64UrlToBlob: function (urlData) {
+
+        var bytes = window.atob(urlData.split(',')[1]);        //去掉url的头，并转换为byte
+
+        //处理异常,将ascii码小于0的转换为大于0
+        var ab = new ArrayBuffer(bytes.length);
+        var ia = new Uint8Array(ab);
+        for (var i = 0; i < bytes.length; i++) {
+          ia[i] = bytes.charCodeAt(i);
+        }
+
+        return new Blob([ab], {type: 'image/png'});
+      },
       preImg:function(){
+        var vm=this;
+
         for(var i = 0;i<document.getElementById("inputfile").files.length;i++){
           flag++;
-          this.imgsrcs.push(document.getElementById("inputfile").files[i]);//获取表单文件往imgsrcs里加
-          var src = getFileUrl("inputfile",i);
-          console.log(src);
+
+          vm.dealImage(getFileUrl("inputfile", i), {width: 400}, function (base) {
+            vm.imgsrcs.push(vm.convertBase64UrlToBlob(base))
+
+          });
+          var src = getFileUrl("inputfile", i)
           $("#smallimages").append("<div class='cream'>"+
             "<img width='19px' height='19px' src='static/images/ic_delete.png' class='delete' @click='det' num='"+flag+"'>"+
             "<img class='smallimg' width='100%' height=100%' src='"+src+"'> </div>");
         }
-        console.log(this.imgsrcs);
+        console.log(vm.imgsrcs);
       },
       subm:function () {
         if(this.addType=="" || this.addContent==""){

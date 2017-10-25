@@ -20,8 +20,10 @@
     <div class="imgBg">
       <div class="bg_content" id="bg_content" >
         <img src="../images/bg.png" width="100%">
-        <div class="bg_text">欢迎来到缘分天空
-        <span class="qudi" @click="closeMess">确定</span>
+        <div class="bg_text">
+          <div>欢迎来到缘分天空</div>
+          <div class="context" style="width:100%;text-align:center;height:60px;line-height:60px;color:#555">快点开始你的结缘之旅吧!</div>
+          <span class="qudi" @click="closeMess">确定</span>
         </div>
       </div>
     </div>
@@ -67,16 +69,16 @@
               style="width:70%">
             </el-date-picker>
           </li>
-          <li>
-            <span class="p_me">月收入</span><el-select v-model="monthlyIncome" placeholder="请选择" style="width:70%">
-            <el-option
-              v-for="item in monthlyIncomeselect"
-              :key="item"
-              :label="item"
-              :value="item">
-            </el-option>
-          </el-select>
-          </li>
+          <!--<li>-->
+            <!--<span class="p_me">月收入</span><el-select v-model="monthlyIncome" placeholder="请选择" style="width:70%">-->
+            <!--<el-option-->
+              <!--v-for="item in monthlyIncomeselect"-->
+              <!--:key="item"-->
+              <!--:label="item"-->
+              <!--:value="item">-->
+            <!--</el-option>-->
+          <!--</el-select>-->
+          <!--</li>-->
           <li>
             <span class="p_me">身高</span><el-input v-model="height" placeholder="请填写身高信息（厘米）" type="number" style="width:70%">
           </el-input>
@@ -127,7 +129,7 @@
 </div>
   <div id="smallimages"  @click="det"></div>
   <div class="addphoto" v-show="addimage"><input type="file" accept="image/*" capture="camera"  id="inputfile" @change="preImg()" ><i class="el-icon-plus"></i></div>
-<div class="submit"><el-button @click="submit">开始结缘</el-button><a :href="'../../index.html?token='+token">去主页</a></div>
+<div class="submit"><el-button @click="submit">开始结缘</el-button><el-button><a :href="'../../index.html?token='+token">去主页</a></el-button></div>
   <div id="blackBg2" v-show="show" @click="close">
   </div>
   <div id="blackBg3" style="display:none;width: 100%;height: 100%;background: rgba(0,0,0,0.6);position: fixed;
@@ -211,14 +213,66 @@
       }
     },
     methods: {
+      dealImage: function (path, obj, callback) {
+        var img = new Image();
+        img.src = path;
+        img.onload = function () {
+          var that = this;
+          // 默认按比例压缩
+          var w = that.width,
+            h = that.height,
+            scale = w / h;
+          w = obj.width || w;
+          h = obj.height || (w / scale);
+          var quality = 1;  // 默认图片质量为0.7
+          //生成canvas
+          var canvas = document.createElement('canvas');
+          var ctx = canvas.getContext('2d');
+          // 创建属性节点
+          var anw = document.createAttribute("width");
+          anw.nodeValue = w;
+          var anh = document.createAttribute("height");
+          anh.nodeValue = h;
+          canvas.setAttributeNode(anw);
+          canvas.setAttributeNode(anh);
+          ctx.drawImage(that, 0, 0, w, h);
+          // 图像质量
+          if (obj.quality && obj.quality <= 1 && obj.quality > 0) {
+            quality = obj.quality;
+          }
+          // quality值越小，所绘制出的图像越模糊
+          var base64 = canvas.toDataURL('image/jpeg', quality);
+          // 回调函数返回base64的值
+          callback(base64);
+        }
+      },
+      convertBase64UrlToBlob: function (urlData) {
+
+        var bytes = window.atob(urlData.split(',')[1]);        //去掉url的头，并转换为byte
+
+        //处理异常,将ascii码小于0的转换为大于0
+        var ab = new ArrayBuffer(bytes.length);
+        var ia = new Uint8Array(ab);
+        for (var i = 0; i < bytes.length; i++) {
+          ia[i] = bytes.charCodeAt(i);
+        }
+
+        return new Blob([ab], {type: 'image/png'});
+      },
       preImg: function () {
-        imgsrcs.push(document.getElementById("inputfile").files[0]);//获取表单文件往imgsrcs里加
-        var src = getFileUrl("inputfile", 0);
-        console.log(src);
-        $("#smallimages").append("<div class='cream'>" +
-          "<img width='19px' height='19px' src='../images/ic_delete.png' class='delete'>" +
-          "<img class='smallimg' width='100%' height='100%' src='" + src + "'> </div>");
-        console.log(imgsrcs);
+        var vm = this;
+        vm.dealImage(getFileUrl("inputfile", 0), {width: 200}, function (base) {
+//直接将获取到的base64的字符串，放到一个image标签中就可看到测试后的压缩之后的样式图了
+
+          console.log(vm.convertBase64UrlToBlob(base));
+          imgsrcs.push(vm.convertBase64UrlToBlob(base))
+          var src = base;
+          $("#smallimages").append("<div class='cream'>" +
+            "<img width='19px' height='19px' src='../images/ic_delete.png' class='delete'>" +
+            "<img class='smallimg' width='100%' height='100%' src='" + src + "'> </div>");
+          console.log(imgsrcs);
+
+        });
         this.addimage = false;
       },
       close: function () {
@@ -241,10 +295,9 @@
         }
       },
       submit: function () {
-        if (imgsrcs.length == 0 || this.birthday == "" || this.height == "" || this.monthlyIncome=="" || this.area=="" || this.education=="" || this.lTypes=="" || this.pLanguage=="")
-   {
-     this.$message('填写完整信息');
-     } else {
+        if (imgsrcs.length == 0 || this.birthday == "" || this.height == "" || this.area == "" || this.education == "" || this.lTypes == "" || this.pLanguage == "") {
+          this.$message('填写完整信息');
+        } else {
           $("#blackBg3").css("display", "block");
 
           var photo = imgsrcs[0];
@@ -274,7 +327,7 @@
           formData.append('pLanguage', a.pLanguage);
           $.ajax({
             type: "post",
-            //url:"http://172.16.98.74:8080/swdAPP/common/LoveTheSkyUser/registerLoveTheSkyUser.json",
+//            url:"http://172.16.110.125:8080/swdAPP/common/LoveTheSkyUser/registerLoveTheSkyUser.json",
             url: "http://appinter.sunwoda.com/common/LoveTheSkyUser/registerLoveTheSkyUser.json",
             data: formData,
             cache: false,
@@ -282,6 +335,7 @@
             processData: false,
             mimeType: "multipart/form-data",
             success: function (data) {
+              console.log(data);
               var a = JSON.parse(data);
               $("#blackBg3").css("display", "none");
               console.log(a["statusCode"]);
