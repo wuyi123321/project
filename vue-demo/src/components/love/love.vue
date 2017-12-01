@@ -7,13 +7,16 @@
       <div class="item">图片</div>
       <div class="item"><router-link to="/my">我的</router-link></div>
     </div>
-    <router-view :token="token" :websocket="websocket" :userNo="userNo" :myMessage="myMessage"></router-view>
-    <add-item id="addItem" :userNo="userNo" :token="token" :close="remove_add"></add-item>
+    <router-view :token="token" :websocket="websocket" :userNo="userNo" :myMessage="myMessage" :isadmin="isadmin"></router-view>
+    <add-item id="addItem" :userNo="userNo" :token="token" :close="remove_add" ></add-item>
   </div>
 </template>
 
 
+
 <script>
+
+
   import addItem from "@/components/love/addItem.vue";
   export default {
     name: 'hello',
@@ -21,7 +24,8 @@
       userNo:String,
       token:String,
       websocket:WebSocket,
-      myMessage:Object
+      myMessage:Object,
+      isadmin:Number
     },
     data () {
       return {
@@ -34,6 +38,7 @@
       }
     },
     mounted: function () {
+      console.log(this.isadmin)
     },
     methods:{
       addShow:function () {//开始添加说说

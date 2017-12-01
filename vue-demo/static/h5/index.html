@@ -69,16 +69,6 @@
               style="width:70%">
             </el-date-picker>
           </li>
-          <!--<li>-->
-            <!--<span class="p_me">月收入</span><el-select v-model="monthlyIncome" placeholder="请选择" style="width:70%">-->
-            <!--<el-option-->
-              <!--v-for="item in monthlyIncomeselect"-->
-              <!--:key="item"-->
-              <!--:label="item"-->
-              <!--:value="item">-->
-            <!--</el-option>-->
-          <!--</el-select>-->
-          <!--</li>-->
           <li>
             <span class="p_me">身高</span><el-input v-model="height" placeholder="请填写身高信息（厘米）" type="number" style="width:70%">
           </el-input>
@@ -128,7 +118,7 @@
     </div>
 </div>
   <div id="smallimages"  @click="det"></div>
-  <div class="addphoto" v-show="addimage"><input type="file" accept="image/*" capture="camera"  id="inputfile" @change="preImg()" ><i class="el-icon-plus"></i></div>
+  <div class="addphoto" v-show="addimage"><input type="file" multiple="multiple" accept="image/*" capture="camera"  id="inputfile" @change="preImg()" ><i class="el-icon-plus"></i></div>
 <div class="submit"><el-button @click="submit">开始结缘</el-button><el-button><a :href="'../../index.html?token='+token">去主页</a></el-button></div>
   <div id="blackBg2" v-show="show" @click="close">
   </div>
@@ -165,23 +155,58 @@
     }
     return url;
   }
+
   $.ajax({
-    type:"post",
-    url:"http://appinter.sunwoda.com/common/getPersonalInfo.json",
+    type:"get",
+    url:"http://appinter.sunwoda.com/common/LoveTheSkyUser/loveTheSkyUser.json?token="+token,
     dataType:"json",
-    data: {"token":token},
-    success:function(data){
-    console.log(data);
-      data=data.dataInfo.singleData;
-       a.deptName=data["deptName"],
-       a. sex=data["sex"],
-       a.tel=data["tel"],
-       a.userName=data["userName"],
-       a.userNo=data["userNo"]
-      if(data["sex"]=="男"){
-        a.lTypesselect=["冷酷幽默","阳光少年","热心勇敢","智慧过人","冷静稳重"];
+    success:function (data) {
+      console.log(data);
+      if(data.statusCode==0){
+
+        if(data.message.length>0){
+         window.location.href = "../../index.html?token="+token
+      }else {
+        $.ajax({
+          type:"post",
+          url:"http://appinter.sunwoda.com/common/getPersonalInfo.json",
+          dataType:"json",
+          data: {"token":token},
+          success:function(data){
+            console.log(data);
+            data=data.dataInfo.singleData;
+            a.deptName=data["deptName"],
+              a. sex=data["sex"],
+              a.tel=data["tel"],
+              a.userName=data["userName"],
+              a.userNo=data["userNo"]
+            if(data["sex"]=="男"){
+              a.lTypesselect=["阳光帅气","成熟稳重","幽默风趣","运动达人","文艺青年"];
+            }
+          }});
       }
-    }});
+      }else {
+        $.ajax({
+          type:"post",
+          url:"http://appinter.sunwoda.com/common/getPersonalInfo.json",
+          dataType:"json",
+          data: {"token":token},
+          success:function(data){
+            console.log(data);
+            data=data.dataInfo.singleData;
+            a.deptName=data["deptName"],
+              a. sex=data["sex"],
+              a.tel=data["tel"],
+              a.userName=data["userName"],
+              a.userNo=data["userNo"]
+            if(data["sex"]=="男"){
+              a.lTypesselect=["阳光帅气","成熟稳重","幽默风趣","运动达人","文艺青年"];
+            }
+          }});
+      }
+    }
+  })
+
 
   var imgsrcs=[];
   var a= new Vue({
@@ -199,7 +224,6 @@
         userNo:"",
         birthday:"",
         monthlyIncome:"",
-        monthlyIncomeselect:["3000以下","3000-5000","5000-8000","8000-10000","10000以上"],
         height:"",
         area:"",
         education:"",
@@ -295,6 +319,7 @@
         }
       },
       submit: function () {
+        var vm=this;
         if (imgsrcs.length == 0 || this.birthday == "" || this.height == "" || this.area == "" || this.education == "" || this.lTypes == "" || this.pLanguage == "") {
           this.$message('填写完整信息');
         } else {
@@ -309,39 +334,41 @@
           }
           console.log(photo);
           var formData = new FormData();
-          formData.append('birthday', a.birthday);
+          formData.append('birthday', vm.birthday);
           formData.append('photo', photo);
-          formData.append('userNo', a.userNo);
-          formData.append('username', a.userName);
+          formData.append('userNo', vm.userNo);
+          formData.append('username', vm.userName);
           formData.append('gender', sex);
           formData.append('weight', "");
-          formData.append('height', a.height);
-          formData.append('education', a.education);
-          formData.append('monthlyIncome', a.monthlyIncome);
-          formData.append('area', a.area);
+          formData.append('height', vm.height);
+          formData.append('education', vm.education);
+          formData.append('monthlyIncome', vm.monthlyIncome);
+          formData.append('area', vm.area);
           formData.append('token', token);
-          formData.append('department', a.deptName);
-          formData.append('tel', a.tel);
-          formData.append('lTypes', a.lTypes);
-          formData.append('maritalStatus', a.maritalStatus);
-          formData.append('pLanguage', a.pLanguage);
+          formData.append('department', vm.deptName);
+          formData.append('tel', vm.tel);
+          formData.append('lTypes', vm.lTypes);
+          formData.append('maritalStatus', vm.maritalStatus);
+          formData.append('pLanguage', vm.pLanguage);
           $.ajax({
             type: "post",
-//            url:"http://172.16.110.125:8080/swdAPP/common/LoveTheSkyUser/registerLoveTheSkyUser.json",
-            url: "http://appinter.sunwoda.com/common/LoveTheSkyUser/registerLoveTheSkyUser.json",
+            url:"http://appinter.sunwoda.com/common/LoveTheSkyUser/registerLoveTheSkyUser.json",
             data: formData,
             cache: false,
             contentType: false,
             processData: false,
-            mimeType: "multipart/form-data",
             success: function (data) {
               console.log(data);
-              var a = JSON.parse(data);
               $("#blackBg3").css("display", "none");
-              console.log(a["statusCode"]);
-              if (a["statusCode"] == 0) {
-                window.location.href = "../../index.html?token=" + token + ""
+              this.$message({type: 'success', message: data.message});
+              if (data.statusCode == 0) {
+                window.opener = null;
+                window.open('', '_top', '');
+                window.close();
+                window.location.href = "../../index.html?token="+token
               }
+            },error:function () {
+              $("#blackBg3").css("display", "none");
             }
           });
         }

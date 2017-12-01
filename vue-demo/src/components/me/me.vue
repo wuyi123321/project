@@ -2,7 +2,9 @@
   <div id="me">
     <div id="left">
       <div class="top">
+
         <div class="photo">
+          <span style="position: absolute;top: 10px;left: 10px;padding: 2px;border: solid 1px #eee;border-radius: 4px" @click="le">离开应用</span>
           <div class="img" id="hphoto"><img v-bind:src="'http://appinter.sunwoda.com'+myMessage.photo" width="120" height="120" @click="changeImg"/></div>
           <div class="changeimg" id="changeImg">
             <i class="icon-exchange"></i>
@@ -116,6 +118,7 @@
     },
     methods:{
       //点击图像事件
+
       changeImg:function () {
         this.flag++;
         if(this.flag%2==1){
@@ -215,8 +218,15 @@
           console.log("Aaa");
         }
       },
+//离开应用事件
 
 
+      le:function () {
+        var a=window.history.length;
+        window.history.go(0-a+1);
+        console.log(a);
+        this.$message("再按手机返回按键便可关闭");
+      },
       //确定更改图像事件
       submitImg:function () {
         var vm=this;
@@ -236,7 +246,6 @@
           success: function (data) {
             var a = JSON.parse(data)
             $("#blackBg3").css("display", "none");
-            console.log(a);
             if(a.message=="操作成功"){
                vm.myMessage.photo=a.dataInfo.listData[0];
               $("#hphoto").animate({margin:"0 36%"},"fast");
@@ -252,6 +261,13 @@
       },
       //基本信息修改
       mesShowBase:function () {
+//        $("#left").height( $("#right").height(50));
+//        console.log( $("#right").height());
+        for(var item in this.myMessage){
+          if(this.myMessage[item]==null){
+            this.myMessage[item]='';
+          }
+        }
         var vm=this;
         $("#right").animate({width:"100vw"},"fast");
         var sex;
@@ -365,6 +381,11 @@
         });
       },
       mesShowAll:function () {
+        for(var item in this.myMessage){
+          if(this.myMessage[item]==null){
+            this.myMessage[item]='';
+          }
+        }
         var vm = this;
         $("#right").animate({width:"100vw"},"fast");
         var boxcontext = "<div class='r_title'>完善&修改个人信息</div>" +
@@ -404,7 +425,7 @@
           "           <div class='r_item' style='height: auto'>" +
           "             <div class='item_name'>爱情宣言</div>" +
           "             <div class='item_value'>" +
-          "             <textarea style='height:80px;width: 90%;margin-top:4px;background: #baf7fd' placeholder='请填写爱情宣言'>" + this.myMessage.pLanguage+
+          "             <textarea style='height:80px;width: 90%;margin-top:4px;' placeholder='请填写爱情宣言'>" + this.myMessage.pLanguage+
           "             </textarea></div>" +
           "           </div>" +
           "         </div></form>"+" <div class='queding' id='submit'>" +
@@ -449,8 +470,14 @@
         });
       },
       mesShowLove:function () {
+        for(var item in this.myMessage){
+          if(this.myMessage[item]==null){
+            this.myMessage[item]='';
+          }
+        }
         var vm = this;
         $("#right").animate({width:"100vw"},"fast");
+
         var boxcontext = "<div class='r_title'>完善&修改择偶信息</div>" +
           "         <div class='r_content'><form name='tform'>" +
           "           <div class='r_item' >" +
@@ -624,6 +651,8 @@
     font-size: 100px;
     right: 0;
     top: 0;
+    width: 100%;
+    height: 100%;
     opacity: 0;
   }
  #me #smallimages{
@@ -672,12 +701,12 @@
     width: 100%;
     font-size: 0.35rem;
     text-align: center;
-    border-bottom: solid #fda7f7 1px;
+    border-bottom: solid #aaa 1px;
   }
   #me .basemessage{
     position: relative;
     font-size: 0.25rem;
-    border-bottom: solid #fda7f7 1px;
+    border-bottom: solid #aaa 1px;
   }
   #me .basemessage ul li{
     height: 30px;
@@ -740,7 +769,7 @@
     padding-right: 10px;
     padding-bottom: 5px;
   }
-  #right{
+  #me #right{
     width: 0;
     height: 100vh;
     font-size: 0.25rem;
@@ -748,14 +777,16 @@
     top: 0;
     right: 0;
     display: flex;
+    overflow-y: scroll;
+    background: rgba(0,0,0,0.3);
   }
-  #right>div:first-child{
+  #me #right>div:first-child{
     flex: 1;
-    background: rgba(0,0,0,0.2);
+    /*background: rgba(0,0,0,0.2);*/
   }
-  #right>div:last-child{
+  #me #right>div:last-child{
     flex: 4;
-    background:#baf7fd;
+    background:#fff;
   }
   #right i{
     display: block;
@@ -769,13 +800,16 @@
     margin-top: 10px;
 
   }
+  #right .r_content{
+    background:#fff;
+  }
   #right .r_content .r_item{
     display: flex;
     height: 0.62rem;
     font-size: 0.22rem;
     align-items:center;
     margin-left: 0.3rem;
-    border-bottom: solid 1px #fda7f7;
+    border-bottom: solid 1px #eee;
   }
   #right .r_content .r_item .item_name{
     width: 1rem;
@@ -796,28 +830,34 @@
  #me input {
    height:  0.5rem;
     border: none;
-    background: #baf7fd;
+    background: #fff;
   }
 #me  select{
   height:  0.5rem;
   width: 80%;
-   outline-color:#baf7fd;
+   outline-color:#aaa;
     border: none;
-    background: #baf7fd;
+    background: #fff;
   }
  #me select option{
     border: none;
-    outline-color:#eeeeee;
+    outline-color:#fff;
   }
 
   .queding{
-    font-size: 0.3rem;
-    text-align: right;
+    float: right;
+    width: 50px;
+
+    text-align: center;
+    font-size: 0.25rem;
     margin-top: 0.3rem;
-    padding-right: 0.3rem;
+    margin-right: 0.3rem;
+    padding: 3px;
+    border: solid 1px #eeeeee;
+    border-radius: 5px;
   }
   .queding:hover{
-    color: #fda7f7;
+ background: #eee;
   }
 
 </style>

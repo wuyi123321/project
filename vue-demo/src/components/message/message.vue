@@ -33,7 +33,7 @@
              </router-link>
            </li>
          </ul>
-        <router-view :getNum="getNum" :addFmesC="addFmesC" :websocket="websocket" :myMessage="myMessage" :mes="onMessage" :personMess="fMessC"></router-view>
+        <router-view :getNum="getNum" :addFmesC="addFmesC" :websocket="websocket" :myMessage="myMessage" :mes="onMessage" :token="token" :personMess="fMessC"></router-view>
         <el-popover
           ref="popover1"
           placement="left"
@@ -229,7 +229,6 @@ export default {
   min-width: 50px;
 }
 
-
 .el-popover .add_item{
 
   width: 100%;
@@ -250,7 +249,7 @@ export default {
 
 
 #message ul li{
-  z-index: 100;
+
 }
 #message ul li .img{
   height: 39px;

@@ -82,11 +82,15 @@
       return {
 
       }
+
+
     },
+
+
     mounted: function () {
       console.log(this.myMessage);
       for(var item in this.myMessage){
-        if(this.myMessage[item]==null){
+        if(this.myMessage[item]==null || this.myMessage[item]=="" || this.myMessage[item].length==0){
           this.myMessage[item]="未设置此信息";
         }
       }
@@ -98,7 +102,15 @@
         });
       },
       mesShowBase:function () {
+
+        for(var item in this.myMessage){
+          if(this.myMessage[item]==null || this.myMessage[item]=="" || this.myMessage[item].length==0){
+            this.myMessage[item]="未设置此信息";
+          }
+        }
+
         $("#right").animate({width:"100vw"},"fast");
+        console.log(this.myMessage);
         var boxcontext = "<div class='r_title'>"+this.myMessage.username+"个人基本信息</div>" +
           "         <div class='r_content'>" +
           "           <div class='r_item' >" +
@@ -124,7 +136,15 @@
           "         </div>"
         $("#r_box").html( boxcontext);
       },
+
       mesShowAll:function () {
+
+        for(var item in this.myMessage){
+          if(this.myMessage[item]==null || this.myMessage[item]=="" || this.myMessage[item].length==0){
+            this.myMessage[item]="未设置此信息";
+          }
+        }
+        console.log(this.myMessage);
         $("#right").animate({width:"100vw"},"fast");
         var boxcontext = "<div class='r_title'>"+this.myMessage.username+"个人详细信息</div>" +
           "         <div class='r_content'>" +
@@ -168,6 +188,11 @@
         $("#r_box").html( boxcontext);
       },
       mesShowLove:function () {
+        for(var item in this.myMessage){
+          if(this.myMessage[item]==null || this.myMessage[item]=="" || this.myMessage[item].length==0){
+            this.myMessage[item]="未设置此信息";
+          }
+        }
         $("#right").animate({width:"100vw"},"fast");
         var boxcontext = "<div class='r_title'>"+this.myMessage.username+"择偶标准</div>" +
           "         <div class='r_content'>" +
@@ -235,11 +260,9 @@
     }
     }
 
-
-
-
   }
 </script>
+
 
 
 <style>
@@ -249,6 +272,7 @@
     left: 10px;
     top: 10px;
     font-size: 0.5rem;
+    padding-right: 10px;
   }
   #person{
     position: fixed;
@@ -257,6 +281,7 @@
     height: 100%;
     font-size: 0;
     z-index: 999;
+    overflow-y: scroll;
   }
 
   #person .top{
@@ -392,12 +417,12 @@
     width: 100%;
     font-size: 0.35rem;
     text-align: center;
-    border-bottom: solid #fda7f7 1px;
+    border-bottom: solid #aaa 1px;
   }
   #person .basemessage{
     position: relative;
     font-size: 0.25rem;
-    border-bottom: solid #fda7f7 1px;
+    border-bottom: solid #aaa 1px;
   }
   #person .basemessage ul li{
     height: 30px;
@@ -474,7 +499,7 @@
   }
   #person #right>div:last-child{
     flex: 4;
-    background:#baf7fd;
+    background:#fff;
   }
   #person #right i{
     display: block;
@@ -494,7 +519,7 @@
     font-size: 0.22rem;
     align-items:center;
     margin-left: 0.3rem;
-    border-bottom: solid 1px #fda7f7;
+    border-bottom: solid 1px #eee;
   }
   #person #right .r_content .r_item .item_name{
     width: 1rem;
@@ -512,13 +537,13 @@
   }
   #person #me input {
     border: none;
-    background: #baf7fd;
+    background: #fff;
   }
   #person  select{
     width: 80%;
-    outline-color:#baf7fd;
+    outline-color:#aaa;
     border: none;
-    background: #baf7fd;
+    background: #fff;
   }
   #person select option{
     border: none;

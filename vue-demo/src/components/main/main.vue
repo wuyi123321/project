@@ -2,12 +2,12 @@
   <div class="block">
     <el-carousel height="150px" width = "100%">
       <el-carousel-item v-for="item in activeImg" :key="item">
-        <img src="../../../static/images/2.jpg" height="150px" width = "100%"/>
+        <img :src="item" height="150px" width = "100%"/>
       </el-carousel-item>
     </el-carousel>
     <div id="nav">
       <ul @click="show_type">
-        <li v-for="item in lType">{{item}}</li>
+        <li v-for="item in lType2">{{item}}</li>
       </ul>
     </div>
     <div class="body">
@@ -47,7 +47,6 @@
                     <td>身高</td>
                     <td>{{item.height}}</td>
                   </tr>
-
                   <tr>
                     <td>籍贯</td>
                     <td>{{item.area}}</td>
@@ -111,36 +110,39 @@
   export default {
     name: 'hello',
     props:{
-      peopleList:Object,
+//      peopleList:Object,
       vipList:Object,
       lType:Array,
       websocket:WebSocket,
       token:String,
-      userNo:String
+      userNo:String,
+      isadmin:Number
     },
-
-
-
-
     data () {
       return {
-        activeImg:["src/assets/1.jpg","src/assets/2.jpg","src/assets/3.jpg","../assets/4.jpg"],
+        activeImg:["../../../static/images/4.png","../../../static/images/3.png","../../../static/images/2.png","../../../static/images/1.png"],
         peopleListin:{},
         type:"",
         vipListin:{},
         flag:1,
         flag1:1,
         peopleMessage:{},
-        actives:[]
+        actives:[],
+        lType2:[]
       }
     },
     created: function(){
-      this.peopleListin=this.peopleList;
-      console.log(this.peopleListin.listData);
+      this.lType2=this.lType
+      if(this.isadmin==1){
+       this.lType2=["阳光帅气","成熟稳重","幽默风趣","运动达人","文艺青年","善解人意","活波开朗","甜美清新","工作达人","知性女神"]
+      }
+//      this.peopleListin=this.peopleList;
       this.vipListin = this.vipList;
       this.type=this.lType[0];
       this.getACtive();
+      this.getType(3,1,this.type);
       console.log(this.vipList);
+
     },
     methods:{
 
@@ -210,6 +212,8 @@
 
     },
 
+
+
     components: {
       person,
     }
@@ -231,16 +235,19 @@
     min-height: 100vh;
 
   }
-  #nav{
-    height: 25px;
-  }
+  /*#nav{*/
+    /*height: 25px;*/
+  /*}*/
   #nav ul{
     width: 100%;
     height: 100%;
-    border-bottom: solid #fda7f7 1px;
+
     display: flex;
+    flex-wrap: wrap;
   }
   #nav ul li{
+    border-bottom: solid #fda7f7 1px;
+    min-width: 18%;
     flex:1;
     float: left;
     font-size: 0.25rem;

@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <router-view class="abb" :fMess1="fMess1" :mesend="onMessage" :fMess="fMess" :addFmes="addFmes" :websocket="websocket" :myMessage="myMessage" :peopleList="peopleList" :vipList="vipList" :lType="lType" :token="token" :userNo="userNo"></router-view>
+    <router-view class="abb" :isadmin="isadmin" :fMess1="fMess1" :mesend="onMessage" :fMess="fMess" :addFmes="addFmes" :websocket="websocket" :myMessage="myMessage" :peopleList="peopleList" :vipList="vipList" :lType="lType" :token="token" :userNo="userNo"></router-view>
     <div id="bottom">
         <div class="item"><router-link to="/index"><span>主页</span></router-link></div>
         <div class="item"><router-link to="/love"><span>情感天地</span></router-link></div>
@@ -39,7 +39,8 @@ export default {
       addFmes:[],
       fMess:[],
       fMess1:[],
-      mesNum:0
+      mesNum:0,
+      isadmin:0,
     }
   },
 
@@ -57,6 +58,7 @@ export default {
 
         if(parseInt(response.data.statusCode)==0){//注册完成的用户
           vm.userNo=response.data.message;
+          vm.isadmin=response.data.dataInfo.listData[0].isAdmin;
           vm.getMemessage(response.data.message);  //获取个人属性
           vm.getList(response.data.message);//获取主页信息
           vm.getvipList(response.data.message,"推荐");

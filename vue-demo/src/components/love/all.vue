@@ -6,6 +6,7 @@
                  :websocket="websocket"
                  :myMessage="myMessage"
                  :tleTolk="tleTolk"
+                 :isadmin="isadmin"
                  v-on:ee="getPeopleMemessage"
                  v-on:bigImg="bigimg"
       >
@@ -30,7 +31,8 @@
       userNo:String,
       token:String,
       websocket:WebSocket,
-      myMessage:Object
+      myMessage:Object,
+      isadmin:Number
     },
     data () {
       return {
@@ -44,6 +46,7 @@
     },
     mounted: function () {
       this.getmytolk();
+      console.log(this.isadmin)
       console.log(this.peopleMessage)
     },
     methods:{

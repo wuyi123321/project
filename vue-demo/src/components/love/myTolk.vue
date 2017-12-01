@@ -109,7 +109,7 @@
         vm.$http.get('http://appinter.sunwoda.com/common/LoveTheSkyUser/findLoveTheSkyUser.json?userNo='+userNO+'&token='+this.token).then((response) => {
           if(response.data.message=='操作成功'){
             vm.peopleMessage=response.data.dataInfo.listData[0];
-
+            $("#person").css("z-index","999");
             $("#person").animate({width:"100vw"},"fast");
           }else {
             this.$message({type: 'error', message: '获取数据失败'});

@@ -15,7 +15,7 @@
          <ul >
            <li style="text-align: center;border-bottom: solid #eee 1px;height: 25px;line-height: 25px" @click="cleartolk">清空消息</li>
            <li style="text-align: center;border-bottom: solid #eee 1px;height: 25px;line-height: 25px">删除好友</li>
-           <li style="text-align: center;height: 25px;line-height: 25px">好友详情</li>
+           <li style="text-align: center;height: 25px;line-height: 25px" @click="showPeople(tolkTo)">好友详情</li>
          </ul>
       </div>
 
@@ -35,19 +35,22 @@
       </p>
     </div>
     <div class="lt_bottom">
-      <form>
+
         <input type="text" value="" class="lt_inp"/>
         <!--<p class="lt_mask"></p>-->
-        <span @click="doSendfunction">提交</span>
-      </form>
+        <span @click="doSendfunction">发送</span>
+
     </div>
+    <person id="person" :myMessage="peopleMessage" :websocket="websocket"  ></person>
   </div>
 </template>
 <script>
+  import person from "@/components/comm/person.vue";
   export default{
     props:{
       myMessage:Object,//我的信息
       websocket:WebSocket,
+      token:String,
       mes:Function,//父类接受消息的函数
       personMess:Array,//所有好友信息
       addFmesC:Array,//添加好友的信息
@@ -61,7 +64,8 @@
         mEss:[],
         aDfmes:[],
         admin:false,//管理员默认消息状态
-        getNumF:[]
+        getNumF:[],
+        peopleMessage:{}
       }
     },
     mounted: function(){
@@ -83,6 +87,30 @@
       closeSend:function () {
         console.log("Aaa");
         this.$router.go(-1);
+      },
+
+
+
+
+      getPeopleMemessage(userNO){
+        let vm = this;
+        vm.$http.get('http://appinter.sunwoda.com/common/LoveTheSkyUser/findLoveTheSkyUser.json?userNo='+userNO+'&token='+this.token).then((response) => {
+         console.log(response);
+          vm.peopleMessage=response.data.dataInfo.listData[0];
+        }, (response) => {
+          console.log('error');
+        });
+      },
+
+
+
+      showPeople:function (perNo) {//人物展示页面显示
+console.log(perNo);
+        $(".el-popover").css("display","none");
+        this.getPeopleMemessage(perNo);
+        $("#person").css("z-index","999");
+        $("#person").animate({width:"100vw"},"fast");
+
       },
       //消息填充页面函数
       getPersonMess:function () {
@@ -217,6 +245,9 @@
         this.$router.go(-1);
       }
     },
+    components: {
+      person,
+    },
     destroyed: function () {
       this.websocket.onmessage =this.mes;
       console.log("关闭");
@@ -225,6 +256,13 @@
   }
 </script>
 <style>
+  #messageContent #person{
+    width: 0;
+    position: fixed;
+    top:0;
+    background: #fff;
+    z-index:-1;
+  }
   #messageContent{
     position: absolute;
     top: 0;
@@ -236,7 +274,7 @@
 
   #messageContent .title{
     display: flex;
-    height: 5%;
+    height: 40px;
     width: 100%;
     align-items: center;
     border-bottom: solid #eeeeee 1px;
@@ -266,8 +304,9 @@
     height:8.6rem;
   }
   .lt_zong{
-    padding: 0 0.17rem 0 0.24rem;
+    padding-right: 10px;
     height:85%;
+    width: 100vw;
     overflow:scroll;
     background: #e4e8f1;
   }
@@ -339,17 +378,19 @@
     height: 1rem;
   }
   .lt_bottom{
-    width:6.08rem;
-    height:6%;
+
+    width:100vw;
+    height:60px;
     position: absolute;
     bottom: 0;
     left: 0;
+    display: flex;
     background: #F5F5F5;
-    padding: 0.2rem 0.16rem;
+    align-items: center;
   }
   .lt_bottom input{
     width: 80%;
-    height:0.5rem;
+    height: 30px;
     border-radius: 0.2rem;
     background: #fff;
     border:1px solid #ccc;
@@ -370,10 +411,8 @@
     top: 0.3rem;;
   }
   .lt_bottom span{
-    float: right;
-    height: 0.6rem;
-    margin-right: 0.22rem;
-    line-height: 0.6rem;
+    flex: 1;
+    text-align: center;
   }
 .el-popover{
   min-width: 70px;

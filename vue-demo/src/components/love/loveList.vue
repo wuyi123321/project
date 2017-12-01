@@ -4,7 +4,7 @@
       <div class="item" v-for="(mess,n) in tleTolk">
         <div class="it_top">
           <div class="it_img" ><img @click="showPeople" v-bind:id="mess.userNo" v-bind:src="'http://appinter.sunwoda.com'+mess.photo.replace('.','thumbnail.')" width="30" height="30"/></div>
-          <div class="name">{{mess.userName}}<i class="icon-minus-sign" @click="deleteMytolk(mess.messageId,n)" v-if="mess.userNo==userNo"></i></div>
+          <div class="name">{{mess.userName}}<i class="icon-minus-sign" @click="deleteMytolk(mess.messageId,n)" v-if="mess.userNo==userNo || isadmin==1"></i></div>
         </div>
         <div class="it_content">
           <!--说说类型和内容显示-->
@@ -35,7 +35,7 @@
                       <div class="submessage" @click="submessage(item.pMessageId,item.replyId,n,m,item.userName)">确定</div></div>
                     <i class="icon-comment"  slot="reference"></i>
                   </el-popover></i>
-                  <i class="icon-minus-sign" @click="deleteMyreply(item.replyId,mess.messageId,n,m,'al')" v-if="item.pUSerNo==userNo"></i>
+                  <i class="icon-minus-sign" @click="deleteMyreply(item.replyId,mess.messageId,n,m,'al')" v-if="item.pUSerNo==userNo || isadmin==1"></i>
                 </div>
                 <div class="me_txt">{{item.pMessage}}</div>
               </div>
@@ -54,7 +54,7 @@
                       <div class="submessage" @click="submessage(item.pMessageId,item.replyId,n,m,item.userName)">确定</div></div>
                     <i class="icon-comment"  slot="reference"></i>
                   </el-popover></i>
-                  <i class="icon-minus-sign" @click="deleteMyreply(item.replyId,mess.messageId,n,m,s)" v-if="item.pUSerNo==userNo"></i>
+                  <i class="icon-minus-sign" @click="deleteMyreply(item.replyId,mess.messageId,n,m,s)" v-if="item.pUSerNo==userNo || isadmin==1"></i>
                 </div>
                 <div class="me_txt">{{item.pMessage}}</div>
               </div>
@@ -92,6 +92,7 @@
   export default {
     name: 'hello',
     props:{
+      isadmin:Number,
       userNo:String,
       token:String,
       websocket:WebSocket,
@@ -104,7 +105,7 @@
       }
     },
     mounted: function () {
-
+console.log(this.isadmin);
     },
     methods:{
       //删除我的说说
@@ -294,6 +295,7 @@
     margin-top: 40px;
     font-size: 0.24rem;
     background: #fff9f3;
+    min-height: 100vh;
   }
   #loveList .content .item{
     padding-top: 10px;
